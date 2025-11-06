@@ -29,3 +29,9 @@
 .navbar-auth .navbar-link:last-child {
   margin-right: 0;
 }
+
+.logout-btn {
+  color: white;
+  background: none;
+  border: none;
+}
