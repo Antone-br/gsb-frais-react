@@ -1,30 +1,41 @@
 import { createContext, useContext, useState } from "react";
+import { signIn } from '../services/authService.js';
 
 const AuthContext = createContext();
 
 export function AuthProvider({ children }) {
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
+  const [loading, setLoading] = useState(false);
 
-    const [user, setUser] = useState(null);
+  const loginUser = async (login, password) => {
+    setLoading(true);
+    try {
+      const data = await signIn(login, password);
+      setUser(data.visiteur);
+      setToken(data.access_token);
+      setLoading(false);
+      return data;
+    } catch (error) {
+      setLoading(false);
+      throw error;
+    }
+  };
 
-    const loginUser = (login, password) => {
-        if (login === "a" && password === "a") {
-            setUser({ login });
-            return true;
-        }
-        return false;
-    };
+  const logoutUser = () => {
+    setUser(null);
+    setToken(null);
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+  };
 
-    const logoutUser = () => {
-        setUser(null);
-    };
-
-    return (
-        <AuthContext.Provider value={{ user, loginUser, logoutUser }}>
-            {children}
-        </AuthContext.Provider>
-    );
+  return (
+    <AuthContext.Provider value={{ user, token, loginUser, logoutUser, loading }}>
+      {children}
+    </AuthContext.Provider>
+  );
 }
 
 export function useAuth() {
-    return useContext(AuthContext);
+  return useContext(AuthContext);
 }

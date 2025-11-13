@@ -1,4 +1,6 @@
 import { useAuth } from "../context/AuthContext";
+import FraisTable from '../component/FraisTable';
+
 
 function Dashboard() {
     const { user } = useAuth();
@@ -7,6 +9,7 @@ function Dashboard() {
         <>
             <h1>Bienvenue sur Dashboard</h1>
             {user ? (<p>Bonjour {user.login} !</p>) : (<p>Bonjour !</p>)}
+            <FraisTable/>
 
         </>
     );
