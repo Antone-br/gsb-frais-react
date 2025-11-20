@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://gsb.julliand.etu.lmdsio.com/api/';
+export const API_URL = 'http://gsb.julliand.etu.lmdsio.com/api/';
 
 export const signIn = async (login, password) => {
   const response = await axios.post(
@@ -13,3 +13,16 @@ export const signIn = async (login, password) => {
   }
   return response.data;
 };
+
+export const logout = () => {
+  localStorage.removeItem('user');
+  localStorage.removeItem('token');
+};
+
+export const getCurrentUser = () => {
+  return JSON.parse(localStorage.getItem('user'));
+};
+
+export const getAuthToken = () => {
+  return localStorage.getItem('token');
+}; 

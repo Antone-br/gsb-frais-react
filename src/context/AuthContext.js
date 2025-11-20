@@ -1,5 +1,5 @@
-import { createContext, useContext, useState } from "react";
-import { signIn } from '../services/authService.js';
+import { createContext, useContext, useEffect, useState } from "react";
+import { signIn, logout, getAuthToken, getCurrentUser } from '../services/authService.js';
 
 const AuthContext = createContext();
 
@@ -22,12 +22,24 @@ export function AuthProvider({ children }) {
     }
   };
 
+  
+
   const logoutUser = () => {
+    logout();
     setUser(null);
     setToken(null);
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
+
   };
+
+  useEffect(() => {
+    const user = getCurrentUser();
+    const token = getAuthToken();
+    if (user && token) {
+      setUser(user);
+      setToken(token);
+    }
+  }, []);
+
 
   return (
     <AuthContext.Provider value={{ user, token, loginUser, logoutUser, loading }}>
@@ -39,3 +51,4 @@ export function AuthProvider({ children }) {
 export function useAuth() {
   return useContext(AuthContext);
 }
+

@@ -8,7 +8,7 @@ function Dashboard() {
     return (
         <>
             <h1>Bienvenue sur Dashboard</h1>
-            {user ? (<p>Bonjour {user.login} !</p>) : (<p>Bonjour !</p>)}
+            {user ? (<p>Bonjour {user.prenom_visiteur} {user.nom_visiteur} !</p>) : (<p>Bonjour !</p>)}
             <FraisTable/>
 
         </>

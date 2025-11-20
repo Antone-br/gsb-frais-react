@@ -1,6 +1,9 @@
 import { useState, useEffect } from "react";
-import fraisData from "../data/frais.json";
+// import fraisData from "../data/frais.json";
 import "../styles/FraisTable.css";
+import axios from "axios";
+import {API_URL} from "../services/authService"
+import { useAuth } from "../context/AuthContext";
 
 function FraisTable() {
   const [fraisList, setFraisList] = useState([]);
@@ -9,12 +12,27 @@ function FraisTable() {
   const [filterNonNull, setFilterNonNull] = useState(true);
   const [minMontant, setMinMontant] = useState("");
 
+  const { user, token } = useAuth();
+
   useEffect(() => {
-    setTimeout(() => {
-      setFraisList(fraisData);
+  const fetchFrais = async () => {
+    try {
+      const response = await axios.get(`${API_URL}frais/liste/${user.id_visiteur}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setFraisList(response.data);  
+    } catch (error) {
+      console.error('Erreur lors de la récupération des frais:', error);
+    } finally {
       setLoading(false);
-    }, 500);
-  }, []);
+    }
+  };
+
+  fetchFrais();
+}, [user.id_visiteur, token]);
+
 
   const filteredFrais = fraisList
   .filter(frais =>
