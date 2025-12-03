@@ -9,12 +9,15 @@ export default function Login() {
   const navigate = useNavigate();
   const { loginUser } = useAuth();
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (loginUser(login, password)) {
-      navigate('/dashboard');
-    } else {
-      alert("Identifiants incorrects");
+    try {
+      const data = await loginUser(login, password);
+      if (data) {
+        navigate('/dashboard');
+      }
+    } catch (error) {
+      alert("Échec de la connexion");
     }
   };
 
@@ -31,6 +34,7 @@ export default function Login() {
               value={login}
               onChange={e => setLogin(e.target.value)}
               required
+              name="login"
             />
           </div>
           <div className="login-form-group">
@@ -41,6 +45,7 @@ export default function Login() {
               value={password}
               onChange={e => setPassword(e.target.value)}
               required
+              name="password"
             />
           </div>
           <div>
