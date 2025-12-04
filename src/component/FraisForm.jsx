@@ -1,10 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { API_URL, getCurrentUser } from "../services/authService.js";
+import {
+  API_URL,
+  getCurrentUser,
+  getAuthToken,
+} from "../services/authService.js";
 import "../styles/FraisForm.css";
 
-const FraisForm = () => {
+const FraisForm = ({ frais = null }) => {
   const [idFrais, setIdFrais] = useState(null);
   const [anneeMois, setAnneeMois] = useState("");
   const [nbJustificatifs, setNbJustificatifs] = useState("");
@@ -14,21 +18,42 @@ const FraisForm = () => {
 
   const navigate = useNavigate();
 
+  useEffect(() => {
+    if (frais) {
+      setIdFrais(frais.id_frais);
+      setAnneeMois(frais.anneemois || "");
+      setNbJustificatifs(String(frais.nbjustificatifs ?? ""));
+      setMontant(String(frais.montantvalide ?? ""));
+    }
+  }, [frais]);
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
+
     try {
-      const token = localStorage.getItem("token");
+      const token = getAuthToken();
       if (!token) throw new Error("Token manquant");
 
       const fraisData = {
         anneemois: anneeMois,
         nbjustificatifs: parseInt(nbJustificatifs, 10),
-        id_visiteur: getCurrentUser()["id_visiteur"],
       };
 
-      const response = await axios.post(`${API_URL}frais/ajout`, fraisData, {
+      let url = `${API_URL}frais/ajout`;
+
+      if (frais) {
+        fraisData.id_frais = idFrais;
+        fraisData.montantvalide = parseFloat(montant);
+        url = `${API_URL}frais/modif`;
+        console.log(url);
+      } else {
+        fraisData.idvisiteur = getCurrentUser().id_visiteur;
+      }
+      console.log("DATA ENVOYÉE :", fraisData);
+
+      const response = await axios.post(url, fraisData, {
         headers: { Authorization: `Bearer ${token}` },
       });
       console.log(response);

@@ -3,8 +3,9 @@ import { useState, useEffect } from "react";
 import "../styles/FraisTable.css";
 import axios from "axios";
 import { API_URL } from "../services/authService";
-import { useAuth } from "../context/AuthContext";
+import { useAuth, getAuthToken } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
+
 
 function FraisTable() {
   const [fraisList, setFraisList] = useState([]);
@@ -13,7 +14,6 @@ function FraisTable() {
   const [filterNonNull, setFilterNonNull] = useState(true);
   const [minMontant, setMinMontant] = useState("");
   const { user, token } = useAuth();
-
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -62,6 +62,23 @@ function FraisTable() {
       </div>
     );
 
+
+const handleDelete = async (id) => {
+  if (!window.confirm("Êtes-vous sûr de vouloir supprimer ce frais ?")) return;
+
+  try {
+    await axios.delete(`${API_URL}frais/suppr`, {
+      data: { id_frais: id },         
+      headers: { Authorization: `Bearer ${token}` },
+    });
+
+    setFraisList((prev) => prev.filter((frais) => frais.id_frais !== id));
+  } catch (error) {
+    console.error("Erreur lors de la suppression:", error);
+  }
+};
+
+
   return (
     <div className="frais-table-container">
       <h2>Liste des Frais</h2>
@@ -84,7 +101,6 @@ function FraisTable() {
           onChange={(e) => setMinMontant(e.target.value)}
         />
       </div>
-      {/* Champ de recherche */}
       <div className="search-container">
         <input
           type="text"
@@ -104,6 +120,8 @@ function FraisTable() {
             <th>Date de modification</th>
             <th>Montant validé</th>
             <th>Modifier</th>
+            <th>Supprimer</th>
+
           </tr>
         </thead>
         <tbody>
@@ -126,6 +144,15 @@ function FraisTable() {
                   Modifier
                 </button>
               </td>
+              <td>
+                <button
+                  onClick={() => handleDelete(frais.id_frais)} 
+                  className="delete-button"
+                  >
+                  Supprimer
+                </button>
+                </td>
+
             </tr>
           ))}
         </tbody>
