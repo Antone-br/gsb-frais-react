@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-// import fraisData from "../data/frais.json";
 import "../styles/FraisTable.css";
 import axios from "axios";
 import { API_URL } from "../services/authService";

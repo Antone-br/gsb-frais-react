@@ -4,8 +4,8 @@ import { useNavigate } from "react-router-dom";
 import {
   API_URL,
   getCurrentUser,
-  getAuthToken,
 } from "../services/authService.js";
+import { useAuth } from "../context/AuthContext";
 import "../styles/FraisForm.css";
 
 const FraisForm = ({ frais = null }) => {
@@ -15,6 +15,8 @@ const FraisForm = ({ frais = null }) => {
   const [montant, setMontant] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const { token } = useAuth();
+
 
   const navigate = useNavigate();
 
@@ -33,7 +35,7 @@ const FraisForm = ({ frais = null }) => {
     setError("");
 
     try {
-      const token = getAuthToken();
+      
       if (!token) throw new Error("Token manquant");
 
       const fraisData = {
@@ -51,7 +53,6 @@ const FraisForm = ({ frais = null }) => {
       } else {
         fraisData.idvisiteur = getCurrentUser().id_visiteur;
       }
-      console.log("DATA ENVOYÉE :", fraisData);
 
       const response = await axios.post(url, fraisData, {
         headers: { Authorization: `Bearer ${token}` },
