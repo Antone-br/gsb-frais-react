@@ -2,9 +2,9 @@ import { useState, useEffect } from "react";
 // import fraisData from "../data/frais.json";
 import "../styles/FraisTable.css";
 import axios from "axios";
-import {API_URL} from "../services/authService"
+import { API_URL } from "../services/authService";
 import { useAuth } from "../context/AuthContext";
-import { useNavigate } from 'react-router-dom';
+import { useNavigate } from "react-router-dom";
 
 function FraisTable() {
   const [fraisList, setFraisList] = useState([]);
@@ -17,52 +17,61 @@ function FraisTable() {
   const navigate = useNavigate();
 
   useEffect(() => {
-  const fetchFrais = async () => {
-    try {
-      const response = await axios.get(`${API_URL}frais/liste/${user.id_visiteur}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      });
-      setFraisList(response.data);  
-    } catch (error) {
-      console.error('Erreur lors de la récupération des frais:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
+    const fetchFrais = async () => {
+      try {
+        const response = await axios.get(
+          `${API_URL}frais/liste/${user.id_visiteur}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          },
+        );
+        setFraisList(response.data);
+      } catch (error) {
+        console.error("Erreur lors de la récupération des frais:", error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  fetchFrais();
-}, [user.id_visiteur, token]);
-
+    fetchFrais();
+  }, [user.id_visiteur, token]);
 
   const filteredFrais = fraisList
-  .filter(frais =>
-    (!filterNonNull || frais.montantvalide !== null)
-  )
-  .filter(frais =>
-    (frais.annemois && frais.annemois.includes(searchTerm)) ||
-    (frais.id_visiteur && frais.id_visiteur.toString().includes(searchTerm)) ||
-    (frais.montantvalide !== null && frais.montantvalide.toString().includes(searchTerm))
-  )
-  .filter(frais =>
-    minMontant === "" ||
-    (frais.montantvalide !== null && frais.montantvalide >= parseFloat(minMontant))
-  );
+    .filter((frais) => !filterNonNull || frais.montantvalide !== null)
+    .filter(
+      (frais) =>
+        (frais.annemois && frais.annemois.includes(searchTerm)) ||
+        (frais.id_visiteur &&
+          frais.id_visiteur.toString().includes(searchTerm)) ||
+        (frais.montantvalide !== null &&
+          frais.montantvalide.toString().includes(searchTerm)),
+    )
+    .filter(
+      (frais) =>
+        minMontant === "" ||
+        (frais.montantvalide !== null &&
+          frais.montantvalide >= parseFloat(minMontant)),
+    );
 
-
-  if (loading) return <div><b>Chargement des frais...</b></div>;
+  if (loading)
+    return (
+      <div>
+        <b>Chargement des frais...</b>
+      </div>
+    );
 
   return (
     <div className="frais-table-container">
       <h2>Liste des Frais</h2>
-      
+
       <div className="filter-container">
         <label>
           <input
             type="checkbox"
             checked={filterNonNull}
-            onChange={e => setFilterNonNull(e.target.checked)}
+            onChange={(e) => setFilterNonNull(e.target.checked)}
           />
           Afficher uniquement les frais validés
         </label>
@@ -72,7 +81,7 @@ function FraisTable() {
           className="montant-filter"
           value={minMontant}
           placeholder="Montant minimum validé"
-          onChange={e => setMinMontant(e.target.value)}
+          onChange={(e) => setMinMontant(e.target.value)}
         />
       </div>
       {/* Champ de recherche */}
@@ -81,7 +90,7 @@ function FraisTable() {
           type="text"
           placeholder="Rechercher par année-mois, ID visiteur ou montant..."
           value={searchTerm}
-          onChange={e => setSearchTerm(e.target.value)}
+          onChange={(e) => setSearchTerm(e.target.value)}
         />
       </div>
       <table className="frais-table">
@@ -95,11 +104,10 @@ function FraisTable() {
             <th>Date de modification</th>
             <th>Montant validé</th>
             <th>Modifier</th>
-
           </tr>
         </thead>
         <tbody>
-          {filteredFrais.map(frais => (
+          {filteredFrais.map((frais) => (
             <tr key={frais.id_frais}>
               <td>{frais.id_frais}</td>
               <td>{frais.id_etat}</td>
@@ -107,9 +115,17 @@ function FraisTable() {
               <td>{frais.id_visiteur}</td>
               <td>{frais.nbjustificatifs}</td>
               <td>{frais.datemodification}</td>
-              <td>{frais.montantvalide !== null ? frais.montantvalide : "—"}</td>
-              <td><button onClick={() => navigate(`/frais/modifier/${frais.id_frais}`)} className="edit-button">Modifier</button></td>
-
+              <td>
+                {frais.montantvalide !== null ? frais.montantvalide : "—"}
+              </td>
+              <td>
+                <button
+                  onClick={() => navigate(`/frais/modifier/${frais.id_frais}`)}
+                  className="edit-button"
+                >
+                  Modifier
+                </button>
+              </td>
             </tr>
           ))}
         </tbody>

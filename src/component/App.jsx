@@ -3,11 +3,10 @@ import Home from "../pages/Home";
 import Login from "../pages/Login";
 import Dashboard from "../pages/Dashboard";
 import Navbar from "./Navbar.jsx";
-import { AuthProvider } from '../context/AuthContext';
-import PrivateRoute from './PrivateRoute.jsx';
+import { AuthProvider } from "../context/AuthContext";
+import PrivateRoute from "./PrivateRoute.jsx";
 import FraisForm from "./FraisForm.jsx";
 import FraisEdit from "../pages/FraisEdit.jsx";
-
 
 function App() {
   return (
@@ -18,19 +17,19 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
-          <Route path="/dashboard" element={
-            <PrivateRoute>
-              <Dashboard />
-            </PrivateRoute>}
+          <Route
+            path="/dashboard"
+            element={
+              <PrivateRoute>
+                <Dashboard />
+              </PrivateRoute>
+            }
           />
           <Route path="/frais/ajouter" element={<FraisForm />} />
           <Route path="/frais/modifier/:id" element={<FraisEdit />} />
-
         </Routes>
-
       </BrowserRouter>
     </AuthProvider>
-
   );
 }
 

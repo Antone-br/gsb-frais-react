@@ -11,7 +11,8 @@
   border-collapse: collapse;
 }
 
-.frais-table th, .frais-table td {
+.frais-table th,
+.frais-table td {
   padding: 12px 15px;
   text-align: left;
   border-bottom: 1px solid #ddd;
@@ -50,9 +51,9 @@
 }
 
 .edit-button {
-background-color: #ffc107;
-margin-right: 5px;
+  background-color: #ffc107;
+  margin-right: 5px;
 }
 .edit-button:hover {
-background-color: #e0a800;
+  background-color: #e0a800;
 }

@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-import '../styles/Login.css';
+import "../styles/Login.css";
 
 export default function Login() {
-  const [login, setLogin] = useState('');
-  const [password, setPassword] = useState('');
+  const [login, setLogin] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
   const { loginUser } = useAuth();
 
@@ -14,7 +14,7 @@ export default function Login() {
     try {
       const data = await loginUser(login, password);
       if (data) {
-        navigate('/dashboard');
+        navigate("/dashboard");
       }
     } catch (error) {
       alert("Échec de la connexion");
@@ -32,7 +32,7 @@ export default function Login() {
               className="login-form-input"
               type="text"
               value={login}
-              onChange={e => setLogin(e.target.value)}
+              onChange={(e) => setLogin(e.target.value)}
               required
               name="login"
             />
@@ -43,13 +43,15 @@ export default function Login() {
               className="login-form-input"
               type="password"
               value={password}
-              onChange={e => setPassword(e.target.value)}
+              onChange={(e) => setPassword(e.target.value)}
               required
               name="password"
             />
           </div>
           <div>
-            <button className="login-form-button" type="submit">Submit</button>
+            <button className="login-form-button" type="submit">
+              Submit
+            </button>
           </div>
         </form>
       </div>

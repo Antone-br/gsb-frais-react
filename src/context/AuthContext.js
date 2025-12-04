@@ -1,5 +1,10 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { signIn, logout, getAuthToken, getCurrentUser } from '../services/authService.js';
+import {
+  signIn,
+  logout,
+  getAuthToken,
+  getCurrentUser,
+} from "../services/authService.js";
 
 const AuthContext = createContext();
 
@@ -37,9 +42,11 @@ export function AuthProvider({ children }) {
     }
     setLoading(false);
   }, []);
-  
+
   return (
-    <AuthContext.Provider value={{ user, token, loginUser, logoutUser, loading }}>
+    <AuthContext.Provider
+      value={{ user, token, loginUser, logoutUser, loading }}
+    >
       {children}
     </AuthContext.Provider>
   );
@@ -48,4 +55,3 @@ export function AuthProvider({ children }) {
 export function useAuth() {
   return useContext(AuthContext);
 }
-

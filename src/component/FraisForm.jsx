@@ -1,26 +1,26 @@
-import React, { useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { API_URL, getCurrentUser } from '../services/authService.js';
+import React, { useState } from "react";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
+import { API_URL, getCurrentUser } from "../services/authService.js";
 import "../styles/FraisForm.css";
 
 const FraisForm = () => {
   const [idFrais, setIdFrais] = useState(null);
-  const [anneeMois, setAnneeMois] = useState('');
-  const [nbJustificatifs, setNbJustificatifs] = useState('');
-  const [montant, setMontant] = useState('');
+  const [anneeMois, setAnneeMois] = useState("");
+  const [nbJustificatifs, setNbJustificatifs] = useState("");
+  const [montant, setMontant] = useState("");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
 
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    setError('');
+    setError("");
     try {
-      const token = localStorage.getItem('token');
-      if (!token) throw new Error('Token manquant');
+      const token = localStorage.getItem("token");
+      if (!token) throw new Error("Token manquant");
 
       const fraisData = {
         anneemois: anneeMois,
@@ -28,22 +28,18 @@ const FraisForm = () => {
         id_visiteur: getCurrentUser()["id_visiteur"],
       };
 
-      const response = await axios.post(
-        `${API_URL}frais/ajout`,
-        fraisData,
-        {
-          headers: { Authorization: `Bearer ${token}` },
-        }
-      );
+      const response = await axios.post(`${API_URL}frais/ajout`, fraisData, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
       console.log(response);
 
-      navigate('/dashboard');
+      navigate("/dashboard");
     } catch (err) {
-      console.error('Erreur:', err);
+      console.error("Erreur:", err);
       setError(
         err.response?.data?.message ||
-        err.message ||
-        "Erreur lors de l'enregistrement"
+          err.message ||
+          "Erreur lors de l'enregistrement",
       );
     } finally {
       setLoading(false);
@@ -58,7 +54,7 @@ const FraisForm = () => {
           <input
             type="text"
             value={anneeMois}
-            onChange={e => setAnneeMois(e.target.value)}
+            onChange={(e) => setAnneeMois(e.target.value)}
             placeholder="202512"
           />
         </div>
@@ -67,7 +63,7 @@ const FraisForm = () => {
           <input
             type="number"
             value={nbJustificatifs}
-            onChange={e => setNbJustificatifs(e.target.value)}
+            onChange={(e) => setNbJustificatifs(e.target.value)}
             placeholder="1"
           />
         </div>
@@ -77,7 +73,7 @@ const FraisForm = () => {
             type="number"
             step="0.01"
             value={montant}
-            onChange={e => setMontant(e.target.value)}
+            onChange={(e) => setMontant(e.target.value)}
             placeholder="10,15"
           />
         </div>
