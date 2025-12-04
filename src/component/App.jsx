@@ -6,6 +6,8 @@ import Navbar from "./Navbar.jsx";
 import { AuthProvider } from '../context/AuthContext';
 import PrivateRoute from './PrivateRoute.jsx';
 import FraisForm from "./FraisForm.jsx";
+import FraisEdit from "../pages/FraisEdit.jsx";
+
 
 function App() {
   return (
@@ -21,7 +23,9 @@ function App() {
               <Dashboard />
             </PrivateRoute>}
           />
-          <Route path="/frais" element={<FraisForm />} />
+          <Route path="/frais/ajouter" element={<FraisForm />} />
+          <Route path="/frais/modifier/:id" element={<FraisEdit />} />
+
         </Routes>
 
       </BrowserRouter>

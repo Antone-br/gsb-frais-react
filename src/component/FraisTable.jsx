@@ -4,6 +4,7 @@ import "../styles/FraisTable.css";
 import axios from "axios";
 import {API_URL} from "../services/authService"
 import { useAuth } from "../context/AuthContext";
+import { useNavigate } from 'react-router-dom';
 
 function FraisTable() {
   const [fraisList, setFraisList] = useState([]);
@@ -11,8 +12,9 @@ function FraisTable() {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterNonNull, setFilterNonNull] = useState(true);
   const [minMontant, setMinMontant] = useState("");
-
   const { user, token } = useAuth();
+
+  const navigate = useNavigate();
 
   useEffect(() => {
   const fetchFrais = async () => {
@@ -92,18 +94,22 @@ function FraisTable() {
             <th>Nombre de justificatifs</th>
             <th>Date de modification</th>
             <th>Montant validé</th>
+            <th>Modifier</th>
+
           </tr>
         </thead>
         <tbody>
-          {filteredFrais.map(element => (
-            <tr key={element.id_frais}>
-              <td>{element.id_frais}</td>
-              <td>{element.id_etat}</td>
-              <td>{element.anneemois}</td>
-              <td>{element.id_visiteur}</td>
-              <td>{element.nbjustificatifs}</td>
-              <td>{element.datemodification}</td>
-              <td>{element.montantvalide !== null ? element.montantvalide : "—"}</td>
+          {filteredFrais.map(frais => (
+            <tr key={frais.id_frais}>
+              <td>{frais.id_frais}</td>
+              <td>{frais.id_etat}</td>
+              <td>{frais.anneemois}</td>
+              <td>{frais.id_visiteur}</td>
+              <td>{frais.nbjustificatifs}</td>
+              <td>{frais.datemodification}</td>
+              <td>{frais.montantvalide !== null ? frais.montantvalide : "—"}</td>
+              <td><button onClick={() => navigate(`/frais/modifier/${frais.id_frais}`)} className="edit-button">Modifier</button></td>
+
             </tr>
           ))}
         </tbody>

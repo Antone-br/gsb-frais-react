@@ -11,6 +11,8 @@ function Navbar() {
         <div className="navbar-links">
           <Link to="/" className="navbar-link">Accueil</Link>
           <Link to="/dashboard" className="navbar-link">Tableau de bord</Link>
+          <Link to="/frais/ajouter" className="navbar-link">Ajouter frais</Link>
+
         </div>
         <div className="navbar-auth">
           {user ? (

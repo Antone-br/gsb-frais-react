@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { getCurrentUser } from '../services/authService.js';
+import { API_URL, getCurrentUser } from '../services/authService.js';
 import "../styles/FraisForm.css";
 
 const FraisForm = () => {
@@ -25,11 +25,11 @@ const FraisForm = () => {
       const fraisData = {
         anneemois: anneeMois,
         nbjustificatifs: parseInt(nbJustificatifs, 10),
-        id_visiteur: getCurrentUser().id_visiteur,
+        id_visiteur: getCurrentUser()["id_visiteur"],
       };
 
       const response = await axios.post(
-        `${process.env.REACT_APP_API_URL}/frais/ajout`,
+        `${API_URL}frais/ajout`,
         fraisData,
         {
           headers: { Authorization: `Bearer ${token}` },
@@ -59,7 +59,7 @@ const FraisForm = () => {
             type="text"
             value={anneeMois}
             onChange={e => setAnneeMois(e.target.value)}
-            placeholder="Année/Mois"
+            placeholder="202512"
           />
         </div>
         <div className="form-group">
@@ -68,7 +68,7 @@ const FraisForm = () => {
             type="number"
             value={nbJustificatifs}
             onChange={e => setNbJustificatifs(e.target.value)}
-            placeholder="Nb justificatifs"
+            placeholder="1"
           />
         </div>
         <div className="form-group">
@@ -78,7 +78,7 @@ const FraisForm = () => {
             step="0.01"
             value={montant}
             onChange={e => setMontant(e.target.value)}
-            placeholder="Montant"
+            placeholder="10,15"
           />
         </div>
         {error && <div className="error-message">{error}</div>}

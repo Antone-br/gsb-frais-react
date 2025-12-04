@@ -22,14 +22,10 @@ export function AuthProvider({ children }) {
     }
   };
 
-
-  
-
   const logoutUser = () => {
     logout();
     setUser(null);
     setToken(null);
-
   };
 
   useEffect(() => {
@@ -39,10 +35,9 @@ export function AuthProvider({ children }) {
       setUser(user);
       setToken(token);
     }
+    setLoading(false);
   }, []);
-
   
-
   return (
     <AuthContext.Provider value={{ user, token, loginUser, logoutUser, loading }}>
       {children}
