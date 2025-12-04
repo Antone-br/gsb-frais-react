@@ -2,9 +2,8 @@ import { useState, useEffect } from "react";
 import "../styles/FraisTable.css";
 import axios from "axios";
 import { API_URL } from "../services/authService";
-import { useAuth, getAuthToken } from "../context/AuthContext";
+import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
-
 
 function FraisTable() {
   const [fraisList, setFraisList] = useState([]);
@@ -61,22 +60,21 @@ function FraisTable() {
       </div>
     );
 
+  const handleDelete = async (id) => {
+    if (!window.confirm("Êtes-vous sûr de vouloir supprimer ce frais ?"))
+      return;
 
-const handleDelete = async (id) => {
-  if (!window.confirm("Êtes-vous sûr de vouloir supprimer ce frais ?")) return;
+    try {
+      await axios.delete(`${API_URL}frais/suppr`, {
+        data: { id_frais: id },
+        headers: { Authorization: `Bearer ${token}` },
+      });
 
-  try {
-    await axios.delete(`${API_URL}frais/suppr`, {
-      data: { id_frais: id },         
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
-    setFraisList((prev) => prev.filter((frais) => frais.id_frais !== id));
-  } catch (error) {
-    console.error("Erreur lors de la suppression:", error);
-  }
-};
-
+      setFraisList((prev) => prev.filter((frais) => frais.id_frais !== id));
+    } catch (error) {
+      console.error("Erreur lors de la suppression:", error);
+    }
+  };
 
   return (
     <div className="frais-table-container">
@@ -120,7 +118,6 @@ const handleDelete = async (id) => {
             <th>Montant validé</th>
             <th>Modifier</th>
             <th>Supprimer</th>
-
           </tr>
         </thead>
         <tbody>
@@ -145,13 +142,12 @@ const handleDelete = async (id) => {
               </td>
               <td>
                 <button
-                  onClick={() => handleDelete(frais.id_frais)} 
+                  onClick={() => handleDelete(frais.id_frais)}
                   className="delete-button"
-                  >
+                >
                   Supprimer
                 </button>
-                </td>
-
+              </td>
             </tr>
           ))}
         </tbody>

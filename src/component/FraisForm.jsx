@@ -1,10 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import {
-  API_URL,
-  getCurrentUser,
-} from "../services/authService.js";
+import { API_URL, getCurrentUser } from "../services/authService.js";
 import { useAuth } from "../context/AuthContext";
 import "../styles/FraisForm.css";
 
@@ -16,7 +13,6 @@ const FraisForm = ({ frais = null }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const { token } = useAuth();
-
 
   const navigate = useNavigate();
 
@@ -35,7 +31,6 @@ const FraisForm = ({ frais = null }) => {
     setError("");
 
     try {
-      
       if (!token) throw new Error("Token manquant");
 
       const fraisData = {
