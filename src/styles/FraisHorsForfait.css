@@ -12,7 +12,8 @@
   margin-top: 20px;
 }
 
-.frais-hors-forfait-table th, .frais-hors-forfait-table td {
+.frais-hors-forfait-table th,
+.frais-hors-forfait-table td {
   border: 1px solid #ddd;
   padding: 8px;
   text-align: left;
@@ -49,8 +50,7 @@ button:hover {
 }
 
 .return-button {
-    background-color: #9c9d9f;
-
+  background-color: #9c9d9f;
 }
 
 /* src/styles/FraisHorsForfait.css */

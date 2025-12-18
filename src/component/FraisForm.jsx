@@ -7,7 +7,6 @@ import { useAuth } from "../context/AuthContext";
 import "../styles/FraisForm.css";
 import "../styles/FraisHorsForfait.css";
 
-
 const FraisForm = ({ frais = null }) => {
   const [idFrais, setIdFrais] = useState(null);
   const [anneeMois, setAnneeMois] = useState("");
@@ -102,11 +101,17 @@ const FraisForm = ({ frais = null }) => {
           />
         </div>
 
-        <Link className="frais-hors-forfait-link" to={`/frais/${idFrais}/hors-forfait`}> Gérer frais hors forfait</Link>
+        <Link
+          className="frais-hors-forfait-link"
+          to={`/frais/${idFrais}/hors-forfait`}
+        >
+          {" "}
+          Gérer frais hors forfait
+        </Link>
 
         {error && <div className="error-message">{error}</div>}
         <button type="submit" disabled={loading}>
-          { frais ? "Modifier" : (loading ? "Enregistrement..." : "Ajouter") }
+          {frais ? "Modifier" : loading ? "Enregistrement..." : "Ajouter"}
         </button>
       </form>
     </div>

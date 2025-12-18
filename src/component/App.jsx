@@ -11,7 +11,6 @@ import FraisHorsForfait from "../pages/FraisHorsForfait.jsx";
 import FraisHorsForfaitForm from "../pages/FraisHorsForfaitAdd.jsx";
 import FraisHorsForfaitEdit from "../pages/FraisHorsForfaitEdit.jsx";
 
-
 function App() {
   return (
     <AuthProvider>
@@ -32,10 +31,18 @@ function App() {
           <Route path="/frais/ajouter" element={<FraisForm />} />
           <Route path="/frais/modifier/:id" element={<FraisEdit />} />
 
-          <Route path="/frais/:id/hors-forfait" element={<FraisHorsForfait />} />
-          <Route path="/frais/:id/hors-forfait/ajouter" element={<FraisHorsForfaitForm />} />
-          <Route path="/frais/:id/hors-forfait/modifier/:fraisHF" element={<FraisHorsForfaitEdit />} />
-
+          <Route
+            path="/frais/:id/hors-forfait"
+            element={<FraisHorsForfait />}
+          />
+          <Route
+            path="/frais/:id/hors-forfait/ajouter"
+            element={<FraisHorsForfaitForm />}
+          />
+          <Route
+            path="/frais/:id/hors-forfait/modifier/:idHF"
+            element={<FraisHorsForfaitEdit />}
+          />
         </Routes>
       </BrowserRouter>
     </AuthProvider>

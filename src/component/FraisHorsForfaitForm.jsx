@@ -28,53 +28,53 @@ const FraisHorsForfaitForm = ({ fraisHF = null }) => {
   }, [fraisHF]);
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setLoading(true);
-  setError("");
+    e.preventDefault();
+    setLoading(true);
+    setError("");
 
-  try {
-    if (!token) throw new Error("Token manquant");
+    try {
+      if (!token) throw new Error("Token manquant");
 
-    const data = {
-      id_frais: parseInt(idFrais, 10),
-      date: date,
-      libelle: libelle,
-      montant: parseFloat(montant),
-    };
+      const data = {
+        id_frais: parseInt(idFrais, 10),
+        date: date,
+        libelle: libelle,
+        montant: parseFloat(montant),
+      };
 
-    let url = `${API_URL}fraisHF/ajout`;
+      let url = `${API_URL}fraisHF/ajout`;
 
-    if (fraisHF) {
-      data.id_fraisHF = idFraisHF;
-      url = `${API_URL}fraisHF/modif`;
+      if (fraisHF) {
+        data.id_fraisHF = idFraisHF;
+        url = `${API_URL}fraisHF/modif`;
+      }
+
+      const response = await axios.post(url, data, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+
+      console.log("Réponse API =", response.data);
+
+      navigate(`/frais/${idFrais}/hors-forfait`);
+    } catch (err) {
+      console.error("Erreur HF :", err);
+      setError(
+        err.response?.data?.message ||
+          err.message ||
+          "Erreur lors de l'enregistrement du frais hors forfait",
+      );
+    } finally {
+      setLoading(false);
     }
-
-    console.log("URL =", url);
-    console.log("DATA envoyée =", data);
-
-    const response = await axios.post(url, data, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
-    console.log("Réponse API =", response.data);
-
-    navigate(`/frais/${idFrais}/hors-forfait`);
-  } catch (err) {
-    console.error("Erreur HF :", err);
-    setError(
-      err.response?.data?.message ||
-        err.message ||
-        "Erreur lors de l'enregistrement du frais hors forfait",
-    );
-  } finally {
-    setLoading(false);
-  }
-};
-
+  };
 
   return (
     <div className="frais-hors-forfait-container">
-      <h2>{fraisHF ? "Modifier un frais hors forfait" : "Ajouter un frais hors forfait"}</h2>
+      <h2>
+        {fraisHF
+          ? "Modifier un frais hors forfait"
+          : "Ajouter un frais hors forfait"}
+      </h2>
 
       <form onSubmit={handleSubmit}>
         <input

@@ -6,7 +6,7 @@ import FraisHorsForfaitForm from "../component/FraisHorsForfaitForm";
 import { getAuthToken, API_URL } from "../services/authService";
 
 function FraisHorsForfaitEdit() {
-  const { idHF } = useParams(); 
+  const { idHF } = useParams();
   const [fraisHF, setFraisHF] = useState(null);
   const [loading, setLoading] = useState(true);
 

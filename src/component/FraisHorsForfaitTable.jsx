@@ -22,14 +22,11 @@ function FraisHorsForfaitTable() {
             headers: {
               Authorization: `Bearer ${token}`,
             },
-          }
+          },
         );
         setFraisHFList(response.data || []);
       } catch (error) {
-        console.error(
-          "Erreur lors de la récupération des frais HF:",
-          error
-        );
+        console.error("Erreur lors de la récupération des frais HF:", error);
       } finally {
         setLoading(false);
       }
@@ -38,7 +35,7 @@ function FraisHorsForfaitTable() {
     if (idFraisHF && token) {
       fetchFraisHF();
     }
-  }, [idFraisHF]);
+  }, [idFraisHF, token]);
 
   if (loading) {
     return (
@@ -49,7 +46,11 @@ function FraisHorsForfaitTable() {
   }
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Êtes-vous sûr de vouloir supprimer ce frais hors forfait ?"))
+    if (
+      !window.confirm(
+        "Êtes-vous sûr de vouloir supprimer ce frais hors forfait ?",
+      )
+    )
       return;
 
     try {
@@ -65,6 +66,10 @@ function FraisHorsForfaitTable() {
       console.error("Erreur lors de la suppression:", error);
     }
   };
+
+  const total = fraisHFList.reduce((sum, fraisHF) => {
+    return sum + (parseFloat(fraisHF.montant_fraishorsforfait) || 0);
+  }, 0);
 
   return (
     <div className="frais-hors-forfait-container">
@@ -87,9 +92,9 @@ function FraisHorsForfaitTable() {
               <td>{fraisHF.date_fraishorsforfait}</td>
               <td>
                 {fraisHF.montant_fraishorsforfait !== null
-                  ? `${parseFloat(
-                      fraisHF.montant_fraishorsforfait,
-                    ).toFixed(2)} €`
+                  ? `${parseFloat(fraisHF.montant_fraishorsforfait).toFixed(
+                      2,
+                    )} €`
                   : "—"}
               </td>
               <td>{fraisHF.lib_fraishorsforfait}</td>
@@ -105,9 +110,7 @@ function FraisHorsForfaitTable() {
                   Modifier
                 </button>
                 <button
-                  onClick={() =>
-                    handleDelete(fraisHF.id_fraishorsforfait)
-                  }
+                  onClick={() => handleDelete(fraisHF.id_fraishorsforfait)}
                   className="delete-button"
                 >
                   Supprimer
@@ -119,7 +122,8 @@ function FraisHorsForfaitTable() {
       </table>
 
       <div className="total-row">
-        <div colSpan="3">Total 0.00 €</div>
+        <div colSpan="3">Total {total.toFixed(2)} €</div>
+
         <div colSpan="2">
           <div className="table-actions">
             <button
@@ -131,7 +135,7 @@ function FraisHorsForfaitTable() {
               Ajouter
             </button>
             <button
-              onClick={() => navigate(`/frais/${idFraisHF}`)}
+              onClick={() => navigate(`/frais/modifier/${idFraisHF}`)}
               className="back-button"
             >
               Retour
