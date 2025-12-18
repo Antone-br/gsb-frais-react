@@ -55,13 +55,15 @@ test("Échec de la connexion", async ({ page }) => {
   await page.fill('input[name="login"]', ".");
   await page.fill('input[name="password"]', ".");
 
-  await page.click('button[type="submit"]');
-
   page.on("dialog", async (dialog) => {
     expect(dialog.type()).toContain("alert");
     expect(dialog.message()).toContain("Échec de la connexion");
     await dialog.accept();
   });
+
+  await page.click('button[type="submit"]');
+
+  
 
   await expect(page).toHaveURL("http://localhost:3000/login");
 });
@@ -81,4 +83,19 @@ test("Stay in the dashboard", async ({ page }) => {
   await expect(page).toHaveURL("http://localhost:3000/dashboard");
 
   await expect(page.getByText("Bienvenue sur Dashboard")).toBeVisible();
+});
+
+test('Déconnexion', async ({ page }) => {
+  await page.goto("http://localhost:3000/login");
+
+  await page.fill('input[name="login"]', "andre");
+  await page.fill('input[name="password"]', "secret");
+
+  await page.click('button[type="submit"]');
+
+  await expect(page).toHaveURL("http://localhost:3000/dashboard");
+
+  await page.getByRole('button', { name: /déconnexion/i }).click();
+  await expect(page).toHaveURL('http://localhost:3000/login');
+
 });

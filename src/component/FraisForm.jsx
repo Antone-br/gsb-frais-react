@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { API_URL, getCurrentUser } from "../services/authService.js";
 import { useAuth } from "../context/AuthContext";
 import "../styles/FraisForm.css";
+import "../styles/FraisHorsForfait.css";
+
 
 const FraisForm = ({ frais = null }) => {
   const [idFrais, setIdFrais] = useState(null);
@@ -98,9 +101,12 @@ const FraisForm = ({ frais = null }) => {
             placeholder="10,15"
           />
         </div>
+
+        <Link className="frais-hors-forfait-link" to={`/frais/${idFrais}/hors-forfait`}> Gérer frais hors forfait</Link>
+
         {error && <div className="error-message">{error}</div>}
         <button type="submit" disabled={loading}>
-          {loading ? "Enregistrement..." : "Ajouter"}
+          { frais ? "Modifier" : (loading ? "Enregistrement..." : "Ajouter") }
         </button>
       </form>
     </div>
