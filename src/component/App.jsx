@@ -10,6 +10,8 @@ import FraisEdit from "../pages/FraisEdit.jsx";
 import FraisHorsForfait from "../pages/FraisHorsForfait.jsx";
 import FraisHorsForfaitForm from "../pages/FraisHorsForfaitAdd.jsx";
 import FraisHorsForfaitEdit from "../pages/FraisHorsForfaitEdit.jsx";
+import Prescriptions from "../pages/Prescriptions.jsx";
+
 
 function App() {
   return (
@@ -30,6 +32,7 @@ function App() {
           />
           <Route path="/frais/ajouter" element={<FraisForm />} />
           <Route path="/frais/modifier/:id" element={<FraisEdit />} />
+          <Route path="/prescriptions" element={<Prescriptions />}/>
 
           <Route
             path="/frais/:id/hors-forfait"
@@ -43,6 +46,7 @@ function App() {
             path="/frais/:id/hors-forfait/modifier/:idHF"
             element={<FraisHorsForfaitEdit />}
           />
+          
         </Routes>
       </BrowserRouter>
     </AuthProvider>

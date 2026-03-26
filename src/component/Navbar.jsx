@@ -18,6 +18,9 @@ function Navbar() {
           <Link to="/frais/ajouter" className="navbar-link">
             Ajouter frais
           </Link>
+          <Link to="/prescriptions" className="navbar-link">
+            Prescriptions
+          </Link>
         </div>
         <div className="navbar-auth">
           {user ? (

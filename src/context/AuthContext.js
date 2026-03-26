@@ -18,7 +18,7 @@ export function AuthProvider({ children }) {
     try {
       const data = await signIn(login, password);
       setUser(data.visiteur);
-      setToken(data.access_token);
+      setToken(data.token);
       setLoading(false);
       return data;
     } catch (error) {
