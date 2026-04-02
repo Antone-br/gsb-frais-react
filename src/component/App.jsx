@@ -11,6 +11,8 @@ import FraisHorsForfait from "../pages/FraisHorsForfait.jsx";
 import FraisHorsForfaitForm from "../pages/FraisHorsForfaitAdd.jsx";
 import FraisHorsForfaitEdit from "../pages/FraisHorsForfaitEdit.jsx";
 import Prescriptions from "../pages/Prescriptions.jsx";
+import PrescriptionDetail from "../pages/PrescriptionDetail.jsx";
+import PrescriptionStats from "../pages/PrescriptionStats.jsx";
 
 
 function App() {
@@ -32,7 +34,30 @@ function App() {
           />
           <Route path="/frais/ajouter" element={<FraisForm />} />
           <Route path="/frais/modifier/:id" element={<FraisEdit />} />
-          <Route path="/prescriptions" element={<Prescriptions />}/>
+          <Route
+            path="/prescriptions"
+            element={
+              <PrivateRoute>
+                <Prescriptions />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/prescriptions/stats"
+            element={
+              <PrivateRoute>
+                <PrescriptionStats />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/prescriptions/:idMedicament"
+            element={
+              <PrivateRoute>
+                <PrescriptionDetail />
+              </PrivateRoute>
+            }
+          />
 
           <Route
             path="/frais/:id/hors-forfait"

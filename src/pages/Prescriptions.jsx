@@ -1,14 +1,24 @@
-import { useAuth } from "../context/AuthContext";
-// import FraisHorsForfaitForm from "../component/FraisHorsForfaitForm";
+import { useState } from "react";
+import { Link } from "react-router-dom";
+import MedicamentSearchForm from "../component/MedicamentSearchForm";
+import MedicamentTable from "../component/MedicamentTable";
+import "../styles/Prescriptions.css";
 
 function Prescriptions() {
-  // const { idPresciption } = useParams();
-  // const [prescription, setPrescription] = useState(null);
-  // const [loading, setLoading] = useState(true);
+  const [medicaments, setMedicaments] = useState(null);
 
   return (
-    <div>
-      <h1>Prescription</h1>
+    <div className="prescriptions-container">
+      <div className="prescriptions-header">
+        <h2>Recherche de Medicaments</h2>
+        <Link to="/prescriptions/stats" className="stats-link">
+          Statistiques Dosages
+        </Link>
+      </div>
+
+      <MedicamentSearchForm onResults={setMedicaments} />
+
+      {medicaments !== null && <MedicamentTable medicaments={medicaments} />}
     </div>
   );
 }
