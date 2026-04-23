@@ -58,6 +58,13 @@ export const getPrescriptions = async (idMedicament, token) => {
   return response.data;
 };
 
+export const getAllPrescriptions = async (token) => {
+  const response = await axios.get(`${API_URL}prescriptions/toutes`, {
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return response.data;
+};
+
 export const createPrescription = async (data, token) => {
   const response = await axios.post(`${API_URL}prescriptions`, data, {
     headers: { Authorization: `Bearer ${token}` },

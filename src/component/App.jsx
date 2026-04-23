@@ -12,7 +12,11 @@ import FraisHorsForfaitForm from "../pages/FraisHorsForfaitAdd.jsx";
 import FraisHorsForfaitEdit from "../pages/FraisHorsForfaitEdit.jsx";
 import Prescriptions from "../pages/Prescriptions.jsx";
 import PrescriptionDetail from "../pages/PrescriptionDetail.jsx";
+import PrescriptionCreate from "../pages/PrescriptionCreate.jsx";
+import PrescriptionDelete from "../pages/PrescriptionDelete.jsx";
+import PrescriptionModify from "../pages/PrescriptionModify.jsx";
 import PrescriptionStats from "../pages/PrescriptionStats.jsx";
+import PrescriptionsListAll from "../pages/PrescriptionsListAll.jsx";
 
 
 function App() {
@@ -35,10 +39,34 @@ function App() {
           <Route path="/frais/ajouter" element={<FraisForm />} />
           <Route path="/frais/modifier/:id" element={<FraisEdit />} />
           <Route
-            path="/prescriptions"
+            path="/medicaments"
             element={
               <PrivateRoute>
                 <Prescriptions />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/prescriptions/ajouter"
+            element={
+              <PrivateRoute>
+                <PrescriptionCreate />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/prescriptions/modifier"
+            element={
+              <PrivateRoute>
+                <PrescriptionModify />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/prescriptions/supprimer"
+            element={
+              <PrivateRoute>
+                <PrescriptionDelete />
               </PrivateRoute>
             }
           />
@@ -51,7 +79,15 @@ function App() {
             }
           />
           <Route
-            path="/prescriptions/:idMedicament"
+            path="/prescriptions/toutes"
+            element={
+              <PrivateRoute>
+                <PrescriptionsListAll />
+              </PrivateRoute>
+            }
+          />
+          <Route
+            path="/prescriptions/medicament/:idMedicament"
             element={
               <PrivateRoute>
                 <PrescriptionDetail />

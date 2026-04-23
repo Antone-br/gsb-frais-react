@@ -1,138 +1,81 @@
 import { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import { getAllMedicaments, getTopDosages } from "../services/prescriptionService";
+import { getAllPrescriptions } from "../services/prescriptionService";
 import "../styles/Prescriptions.css";
 
 function PrescriptionStats() {
   const { token } = useAuth();
   const navigate = useNavigate();
 
-  const [medicaments, setMedicaments] = useState([]);
-  const [selectedMedicament, setSelectedMedicament] = useState("");
-  const [stats, setStats] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [ranking, setRanking] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
-    const fetchMedicaments = async () => {
+    const fetchAll = async () => {
       try {
-        const data = await getAllMedicaments(token);
-        setMedicaments(data || []);
+        const data = await getAllPrescriptions(token);
+        const counts = new Map();
+        for (const p of data || []) {
+          const key = p.id_medicament;
+          if (!counts.has(key)) {
+            counts.set(key, {
+              id_medicament: p.id_medicament,
+              nom_commercial: p.nom_commercial,
+              total: 0,
+            });
+          }
+          counts.get(key).total += 1;
+        }
+        const sorted = [...counts.values()].sort((a, b) => b.total - a.total);
+        setRanking(sorted);
       } catch (err) {
-        console.error("Erreur chargement medicaments:", err);
+        console.error("Erreur chargement stats:", err);
+        setError("Erreur lors du chargement.");
+      } finally {
+        setLoading(false);
       }
     };
-    if (token) fetchMedicaments();
+    if (token) fetchAll();
   }, [token]);
 
-  const handleMedicamentChange = async (e) => {
-    const idMed = e.target.value;
-    setSelectedMedicament(idMed);
-    setStats(null);
-    setError("");
-
-    if (!idMed) return;
-
-    setLoading(true);
-    try {
-      const data = await getTopDosages(idMed, token);
-      setStats(data);
-    } catch (err) {
-      console.error("Erreur chargement stats:", err);
-      setError("Erreur lors du chargement des statistiques.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  if (loading) {
+    return <div className="prescriptions-container"><b>Chargement...</b></div>;
+  }
 
   return (
     <div className="prescriptions-container">
       <div className="prescriptions-header">
-        <h2>Statistiques des Dosages</h2>
-        <button className="back-button" onClick={() => navigate("/prescriptions")}>
+        <h2>Medicaments du plus au moins prescrit</h2>
+        <button className="back-button" onClick={() => navigate("/medicaments")}>
           Retour
         </button>
       </div>
 
-      <div className="form-group">
-        <label>Selectionnez un medicament</label>
-        <select
-          className="stats-select"
-          value={selectedMedicament}
-          onChange={handleMedicamentChange}
-        >
-          <option value="">-- Choisir un medicament --</option>
-          {medicaments.map((med) => (
-            <option key={med.id_medicament} value={med.id_medicament}>
-              {med.nom_commercial}
-            </option>
-          ))}
-        </select>
-      </div>
-
       {error && <div className="error-message">{error}</div>}
 
-      {loading && <b>Chargement...</b>}
-
-      {!selectedMedicament && !loading && (
-        <p className="no-data-message">
-          Selectionnez un medicament pour afficher les statistiques.
-        </p>
-      )}
-
-      {stats && !loading && (
-        <>
-          {stats.totalPrescriptions === 0 ? (
-            <div>
-              <p className="no-data-message">
-                Aucune prescription pour{" "}
-                <strong>{stats.medicament?.nom_commercial}</strong>.
-              </p>
-              <Link
-                to={`/prescriptions/${selectedMedicament}`}
-                className="detail-link"
-              >
-                Voir le detail du medicament
-              </Link>
-            </div>
-          ) : (
-            <div>
-              <div className="stats-info">
-                <strong>{stats.medicament?.nom_commercial}</strong> —{" "}
-                {stats.totalPrescriptions} prescription(s) au total
-              </div>
-
-              <h3>
-                Dosage(s) le(s) plus prescrit(s)
-                {stats.topDosages.length > 1 && (
-                  <span className="ex-aequo-badge">Ex aequo</span>
-                )}
-              </h3>
-
-              <table className="prescriptions-table">
-                <thead>
-                  <tr>
-                    <th>Dosage</th>
-                    <th>Nombre</th>
-                    <th>Pourcentage</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {stats.topDosages.map((dosage) => (
-                    <tr key={dosage.id_dosage}>
-                      <td>
-                        {dosage.qte_dosage} {dosage.unite_dosage}
-                      </td>
-                      <td>{dosage.total}</td>
-                      <td>{dosage.percent} %</td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
-          )}
-        </>
+      {ranking.length === 0 ? (
+        <p className="no-data-message">Aucune prescription.</p>
+      ) : (
+        <table className="prescriptions-table">
+          <thead>
+            <tr>
+              <th>Rang</th>
+              <th>Medicament</th>
+              <th>Nombre de prescriptions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {ranking.map((m, i) => (
+              <tr key={m.id_medicament}>
+                <td>{i + 1}</td>
+                <td>{m.nom_commercial}</td>
+                <td>{m.total}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       )}
     </div>
   );

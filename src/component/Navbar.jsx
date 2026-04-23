@@ -18,9 +18,25 @@ function Navbar() {
           <Link to="/frais/ajouter" className="navbar-link">
             Ajouter frais
           </Link>
-          <Link to="/prescriptions" className="navbar-link">
-            Prescriptions
-          </Link>
+          <div className="navbar-dropdown">
+            <button type="button" className="navbar-link navbar-dropdown-toggle">
+              Prescriptions ▾
+            </button>
+            <div className="navbar-dropdown-menu">
+              <Link to="/medicaments" className="navbar-dropdown-item">
+                Rechercher
+              </Link>
+              <Link to="/prescriptions/toutes" className="navbar-dropdown-item">
+                Toutes les prescriptions
+              </Link>
+              <Link to="/prescriptions/ajouter" className="navbar-dropdown-item">
+                Ajouter
+              </Link>
+              <Link to="/prescriptions/stats" className="navbar-dropdown-item">
+                Dosage le plus prescrit
+              </Link>
+            </div>
+          </div>
         </div>
         <div className="navbar-auth">
           {user ? (

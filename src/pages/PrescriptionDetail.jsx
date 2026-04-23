@@ -1,17 +1,12 @@
 import { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import {
   getMedicament,
   getPrescriptions,
-  getDosages,
-  getTypesIndividu,
-  createPrescription,
-  updatePrescription,
   deletePrescription,
 } from "../services/prescriptionService";
 import PrescriptionTable from "../component/PrescriptionTable";
-import PrescriptionForm from "../component/PrescriptionForm";
 import "../styles/Prescriptions.css";
 
 function PrescriptionDetail() {
@@ -21,46 +16,31 @@ function PrescriptionDetail() {
 
   const [medicament, setMedicament] = useState(null);
   const [prescriptions, setPrescriptions] = useState([]);
-  const [dosages, setDosages] = useState([]);
-  const [typesIndividu, setTypesIndividu] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [editData, setEditData] = useState(null);
-
-  const fetchAll = async () => {
-    try {
-      const [med, presc, dos, ti] = await Promise.all([
-        getMedicament(idMedicament, token),
-        getPrescriptions(idMedicament, token),
-        getDosages(token),
-        getTypesIndividu(token),
-      ]);
-      setMedicament(med);
-      setPrescriptions(presc || []);
-      setDosages(dos || []);
-      setTypesIndividu(ti || []);
-    } catch (err) {
-      console.error("Erreur chargement:", err);
-      setError("Erreur lors du chargement des donnees.");
-    } finally {
-      setLoading(false);
-    }
-  };
 
   useEffect(() => {
+    const fetchAll = async () => {
+      try {
+        const [med, presc] = await Promise.all([
+          getMedicament(idMedicament, token),
+          getPrescriptions(idMedicament, token),
+        ]);
+        setMedicament(med);
+        setPrescriptions(presc || []);
+      } catch (err) {
+        console.error("Erreur chargement:", err);
+        setError("Erreur lors du chargement des donnees.");
+      } finally {
+        setLoading(false);
+      }
+    };
     if (token && idMedicament) fetchAll();
   }, [token, idMedicament]);
 
-  const refreshPrescriptions = async () => {
-    const data = await getPrescriptions(idMedicament, token);
-    setPrescriptions(data || []);
-  };
-
-  const handleEdit = (presc) => {
-    setEditData(presc);
-    setSuccess("");
-    setError("");
+  const handleEdit = () => {
+    navigate("/prescriptions/modifier");
   };
 
   const handleDelete = async (presc) => {
@@ -87,37 +67,6 @@ function PrescriptionDetail() {
     }
   };
 
-  const handleFormSubmit = async (formData) => {
-    setError("");
-    setSuccess("");
-
-    try {
-      if (editData) {
-        await updatePrescription(
-          {
-            old_id_medicament: parseInt(idMedicament, 10),
-            old_id_dosage: editData.id_dosage,
-            old_id_type_individu: editData.id_type_individu,
-            id_medicament: parseInt(idMedicament, 10),
-            ...formData,
-          },
-          token,
-        );
-        setSuccess("Prescription modifiee.");
-      } else {
-        await createPrescription(
-          { id_medicament: parseInt(idMedicament, 10), ...formData },
-          token,
-        );
-        setSuccess("Prescription ajoutee.");
-      }
-      setEditData(null);
-      await refreshPrescriptions();
-    } catch (err) {
-      setError(err.response?.data?.message || "Erreur lors de l'enregistrement.");
-    }
-  };
-
   if (loading) {
     return <div className="prescriptions-container"><b>Chargement...</b></div>;
   }
@@ -126,7 +75,7 @@ function PrescriptionDetail() {
     <div className="prescriptions-container">
       <div className="prescriptions-header">
         <h2>Prescriptions : {medicament?.nom_commercial || `Medicament #${idMedicament}`}</h2>
-        <button className="back-button" onClick={() => navigate("/prescriptions")}>
+        <button className="back-button" onClick={() => navigate("/medicaments")}>
           Retour
         </button>
       </div>
@@ -134,18 +83,17 @@ function PrescriptionDetail() {
       {success && <div className="success-message">{success}</div>}
       {error && <div className="error-message">{error}</div>}
 
+      <Link
+        to={`/prescriptions/ajouter?medicament=${idMedicament}`}
+        className="detail-link"
+      >
+        + Ajouter une prescription
+      </Link>
+
       <PrescriptionTable
         prescriptions={prescriptions}
         onEdit={handleEdit}
         onDelete={handleDelete}
-      />
-
-      <PrescriptionForm
-        dosages={dosages}
-        typesIndividu={typesIndividu}
-        editData={editData}
-        onSubmit={handleFormSubmit}
-        onCancel={() => setEditData(null)}
       />
     </div>
   );
