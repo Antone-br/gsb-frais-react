@@ -1,40 +1,45 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { Link } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import { searchMedicaments, getFamilles } from "../services/prescriptionService";
-import "../styles/Prescriptions.css";
+import { useAuth } from "../../context/AuthContext";
+import { getAllMedicaments, getFamilles } from "../../services/prescriptionService";
+import "../../styles/Prescriptions.css";
 
-function Prescriptions() {
+function MedicamentSearch() {
   const { token } = useAuth();
 
   const [nom, setNom] = useState("");
   const [idFamille, setIdFamille] = useState("");
   const [familles, setFamilles] = useState([]);
-  const [medicaments, setMedicaments] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const [medicaments, setMedicaments] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
 
   useEffect(() => {
     if (!token) return;
-    getFamilles(token)
-      .then((data) => setFamilles(data || []))
-      .catch((err) => console.error("Erreur chargement familles:", err));
+    Promise.all([getAllMedicaments(token), getFamilles(token)])
+      .then(([meds, fams]) => {
+        setMedicaments(meds || []);
+        setFamilles(fams || []);
+      })
+      .catch((err) => {
+        console.error("Erreur chargement:", err);
+        setError("Erreur lors du chargement.");
+      })
+      .finally(() => setLoading(false));
   }, [token]);
 
-  const handleSearch = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
-    try {
-      const data = await searchMedicaments(nom, idFamille || null, token);
-      setMedicaments(data || []);
-    } catch (err) {
-      console.error("Erreur recherche:", err);
-      setError("Erreur lors de la recherche.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const filtered = useMemo(() => {
+    const q = nom.trim().toLowerCase();
+    return medicaments.filter((m) => {
+      const matchNom = !q || (m.nom_commercial || "").toLowerCase().includes(q);
+      const matchFamille = !idFamille || String(m.id_famille) === String(idFamille);
+      return matchNom && matchFamille;
+    });
+  }, [medicaments, nom, idFamille]);
+
+  if (loading) {
+    return <div className="prescriptions-container"><b>Chargement...</b></div>;
+  }
 
   return (
     <div className="prescriptions-container">
@@ -42,7 +47,7 @@ function Prescriptions() {
         <h2>Recherche de Medicaments</h2>
       </div>
 
-      <form className="search-form" onSubmit={handleSearch}>
+      <div className="search-form">
         <div className="form-group">
           <label>Nom commercial</label>
           <input
@@ -64,23 +69,16 @@ function Prescriptions() {
             ))}
           </select>
         </div>
-
-        <button type="submit" className="submit-button" disabled={loading}>
-          {loading ? "Recherche..." : "Rechercher"}
-        </button>
-      </form>
+      </div>
 
       {error && <div className="error-message">{error}</div>}
 
-      {medicaments !== null && medicaments.length === 0 && (
+      {filtered.length === 0 ? (
         <p className="no-data-message">Aucun medicament trouve.</p>
-      )}
-
-      {medicaments !== null && medicaments.length > 0 && (
+      ) : (
         <>
           <p className="results-count">
-            {medicaments.length} resultat{medicaments.length > 1 ? "s" : ""}
-            {medicaments.length === 150 && " (limite atteinte)"}
+            {filtered.length} resultat{filtered.length > 1 ? "s" : ""}
           </p>
           <table className="prescriptions-table">
             <thead>
@@ -91,7 +89,7 @@ function Prescriptions() {
               </tr>
             </thead>
             <tbody>
-              {medicaments.map((med) => (
+              {filtered.map((med) => (
                 <tr key={med.id_medicament}>
                   <td>{med.nom_commercial}</td>
                   <td>{med.lib_famille || "—"}</td>
@@ -113,4 +111,4 @@ function Prescriptions() {
   );
 }
 
-export default Prescriptions;
+export default MedicamentSearch;

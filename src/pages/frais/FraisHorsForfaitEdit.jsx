@@ -1,9 +1,8 @@
-// src/pages/FraisHorsForfaitEdit.jsx
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
-import FraisHorsForfaitForm from "../component/FraisHorsForfaitForm";
-import { getAuthToken, API_URL } from "../services/authService";
+import FraisHorsForfaitForm from "../../component/frais/FraisHorsForfaitForm";
+import { getAuthToken, API_URL } from "../../services/authService";
 
 function FraisHorsForfaitEdit() {
   const { idHF } = useParams();

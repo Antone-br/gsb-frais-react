@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
-import { getAllPrescriptions } from "../services/prescriptionService";
-import "../styles/Prescriptions.css";
+import { useAuth } from "../../context/AuthContext";
+import { getAllPrescriptions } from "../../services/prescriptionService";
+import "../../styles/Prescriptions.css";
 
 function PrescriptionStats() {
   const { token } = useAuth();

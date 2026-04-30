@@ -2,10 +2,10 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import { API_URL, getCurrentUser } from "../services/authService.js";
-import { useAuth } from "../context/AuthContext";
-import "../styles/FraisForm.css";
-import "../styles/FraisHorsForfait.css";
+import { API_URL, getCurrentUser } from "../../services/authService.js";
+import { useAuth } from "../../context/AuthContext";
+import "../../styles/FraisForm.css";
+import "../../styles/FraisHorsForfait.css";
 
 const FraisForm = ({ frais = null }) => {
   const [idFrais, setIdFrais] = useState(null);

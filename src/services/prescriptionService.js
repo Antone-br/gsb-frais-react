@@ -1,18 +1,6 @@
 import axios from "axios";
 import { API_URL } from "./authService";
 
-export const searchMedicaments = async (nom, idFamille, token) => {
-  const params = {};
-  if (nom) params.nom_commercial = nom;
-  if (idFamille) params.id_famille = idFamille;
-
-  const response = await axios.get(`${API_URL}medicaments/recherche`, {
-    params,
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return response.data;
-};
-
 export const getMedicament = async (id, token) => {
   const response = await axios.get(`${API_URL}medicaments/${id}`, {
     headers: { Authorization: `Bearer ${token}` },
@@ -82,14 +70,6 @@ export const updatePrescription = async (data, token) => {
 export const deletePrescription = async (data, token) => {
   const response = await axios.delete(`${API_URL}prescriptions`, {
     data,
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return response.data;
-};
-
-export const getTopDosages = async (idMedicament, token) => {
-  const response = await axios.get(`${API_URL}prescriptions/stats/top`, {
-    params: { id_medicament: idMedicament },
     headers: { Authorization: `Bearer ${token}` },
   });
   return response.data;

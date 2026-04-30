@@ -1,13 +1,13 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { useAuth } from "../context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 import {
   getMedicament,
   getPrescriptions,
   deletePrescription,
-} from "../services/prescriptionService";
-import PrescriptionTable from "../component/PrescriptionTable";
-import "../styles/Prescriptions.css";
+} from "../../services/prescriptionService";
+import PrescriptionTable from "../../component/prescriptions/PrescriptionTable";
+import "../../styles/Prescriptions.css";
 
 function PrescriptionDetail() {
   const { idMedicament } = useParams();
@@ -39,8 +39,10 @@ function PrescriptionDetail() {
     if (token && idMedicament) fetchAll();
   }, [token, idMedicament]);
 
-  const handleEdit = () => {
-    navigate("/prescriptions/modifier");
+  const handleEdit = (presc) => {
+    navigate(
+      `/prescriptions/modifier?medicament=${idMedicament}&dosage=${presc.id_dosage}&type=${presc.id_type_individu}`,
+    );
   };
 
   const handleDelete = async (presc) => {

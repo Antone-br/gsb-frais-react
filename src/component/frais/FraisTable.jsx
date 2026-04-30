@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import "../styles/FraisTable.css";
+import "../../styles/FraisTable.css";
 import axios from "axios";
-import { API_URL } from "../services/authService";
-import { useAuth } from "../context/AuthContext";
+import { API_URL } from "../../services/authService";
+import { useAuth } from "../../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 function FraisTable() {

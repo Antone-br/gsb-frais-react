@@ -1,5 +1,5 @@
 import { useAuth } from "../context/AuthContext";
-import FraisTable from "../component/FraisTable";
+import FraisTable from "../component/frais/FraisTable";
 
 function Dashboard() {
   const { user } = useAuth();

@@ -1,14 +1,15 @@
-import "../styles/Prescriptions.css";
+import "../../styles/Prescriptions.css";
 
-function PrescriptionTable({ prescriptions, onEdit, onDelete }) {
+function PrescriptionTable({ prescriptions, onEdit, onDelete, showMedicament = false }) {
   if (prescriptions.length === 0) {
-    return <p className="no-data-message">Aucune prescription pour ce medicament.</p>;
+    return <p className="no-data-message">Aucune prescription.</p>;
   }
 
   return (
     <table className="prescriptions-table">
       <thead>
         <tr>
+          {showMedicament && <th>Medicament</th>}
           <th>Type individu</th>
           <th>Dosage</th>
           <th>Posologie</th>
@@ -17,7 +18,8 @@ function PrescriptionTable({ prescriptions, onEdit, onDelete }) {
       </thead>
       <tbody>
         {prescriptions.map((presc) => (
-          <tr key={`${presc.id_dosage}-${presc.id_type_individu}`}>
+          <tr key={`${presc.id_medicament}-${presc.id_dosage}-${presc.id_type_individu}`}>
+            {showMedicament && <td>{presc.nom_commercial}</td>}
             <td>{presc.lib_type_individu}</td>
             <td>{presc.qte_dosage} {presc.unite_dosage}</td>
             <td>{presc.posologie || "—"}</td>

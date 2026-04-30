@@ -1,5 +1,5 @@
-import { useAuth } from "../context/AuthContext";
-import FraisForm from "../component/FraisForm";
+import { useAuth } from "../../context/AuthContext";
+import FraisForm from "../../component/frais/FraisForm";
 
 function FraisAdd() {
   const { user } = useAuth();

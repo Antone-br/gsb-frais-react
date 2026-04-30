@@ -1,10 +1,9 @@
-// src/component/FraisHorsForfaitForm.jsx
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
-import { API_URL } from "../services/authService";
-import { useAuth } from "../context/AuthContext";
-import "../styles/FraisHorsForfait.css";
+import { API_URL } from "../../services/authService";
+import { useAuth } from "../../context/AuthContext";
+import "../../styles/FraisHorsForfait.css";
 
 const FraisHorsForfaitForm = ({ fraisHF = null }) => {
   const { token } = useAuth();

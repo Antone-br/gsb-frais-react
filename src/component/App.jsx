@@ -5,18 +5,17 @@ import Dashboard from "../pages/Dashboard";
 import Navbar from "./Navbar.jsx";
 import { AuthProvider } from "../context/AuthContext";
 import PrivateRoute from "./PrivateRoute.jsx";
-import FraisForm from "./FraisForm.jsx";
-import FraisEdit from "../pages/FraisEdit.jsx";
-import FraisHorsForfait from "../pages/FraisHorsForfait.jsx";
-import FraisHorsForfaitForm from "../pages/FraisHorsForfaitAdd.jsx";
-import FraisHorsForfaitEdit from "../pages/FraisHorsForfaitEdit.jsx";
-import Prescriptions from "../pages/Prescriptions.jsx";
-import PrescriptionDetail from "../pages/PrescriptionDetail.jsx";
-import PrescriptionCreate from "../pages/PrescriptionCreate.jsx";
-import PrescriptionDelete from "../pages/PrescriptionDelete.jsx";
-import PrescriptionModify from "../pages/PrescriptionModify.jsx";
-import PrescriptionStats from "../pages/PrescriptionStats.jsx";
-import PrescriptionsListAll from "../pages/PrescriptionsListAll.jsx";
+import FraisForm from "./frais/FraisForm.jsx";
+import FraisEdit from "../pages/frais/FraisEdit.jsx";
+import FraisHorsForfait from "../pages/frais/FraisHorsForfait.jsx";
+import FraisHorsForfaitForm from "../pages/frais/FraisHorsForfaitAdd.jsx";
+import FraisHorsForfaitEdit from "../pages/frais/FraisHorsForfaitEdit.jsx";
+import MedicamentSearch from "../pages/prescriptions/MedicamentSearch.jsx";
+import PrescriptionDetail from "../pages/prescriptions/PrescriptionDetail.jsx";
+import PrescriptionAdd from "../pages/prescriptions/PrescriptionAdd.jsx";
+import PrescriptionEdit from "../pages/prescriptions/PrescriptionEdit.jsx";
+import PrescriptionStats from "../pages/prescriptions/PrescriptionStats.jsx";
+import PrescriptionsList from "../pages/prescriptions/PrescriptionsList.jsx";
 
 
 function App() {
@@ -42,7 +41,7 @@ function App() {
             path="/medicaments"
             element={
               <PrivateRoute>
-                <Prescriptions />
+                <MedicamentSearch />
               </PrivateRoute>
             }
           />
@@ -50,7 +49,7 @@ function App() {
             path="/prescriptions/ajouter"
             element={
               <PrivateRoute>
-                <PrescriptionCreate />
+                <PrescriptionAdd />
               </PrivateRoute>
             }
           />
@@ -58,15 +57,7 @@ function App() {
             path="/prescriptions/modifier"
             element={
               <PrivateRoute>
-                <PrescriptionModify />
-              </PrivateRoute>
-            }
-          />
-          <Route
-            path="/prescriptions/supprimer"
-            element={
-              <PrivateRoute>
-                <PrescriptionDelete />
+                <PrescriptionEdit />
               </PrivateRoute>
             }
           />
@@ -82,7 +73,7 @@ function App() {
             path="/prescriptions/toutes"
             element={
               <PrivateRoute>
-                <PrescriptionsListAll />
+                <PrescriptionsList />
               </PrivateRoute>
             }
           />
@@ -107,7 +98,7 @@ function App() {
             path="/frais/:id/hors-forfait/modifier/:idHF"
             element={<FraisHorsForfaitEdit />}
           />
-          
+
         </Routes>
       </BrowserRouter>
     </AuthProvider>

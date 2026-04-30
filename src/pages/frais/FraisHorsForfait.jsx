@@ -1,5 +1,5 @@
-import { useAuth } from "../context/AuthContext";
-import FraisHorsForfaitTable from "../component/FraisHorsForfaitTable";
+import { useAuth } from "../../context/AuthContext";
+import FraisHorsForfaitTable from "../../component/frais/FraisHorsForfaitTable";
 
 function FraisHorsForfait() {
   const { user } = useAuth();
