@@ -15,9 +15,6 @@ function Navbar() {
           <Link to="/dashboard" className="navbar-link">
             Tableau de bord
           </Link>
-          <Link to="/frais/ajouter" className="navbar-link">
-            Ajouter frais
-          </Link>
           <div className="navbar-dropdown">
             <button type="button" className="navbar-link navbar-dropdown-toggle">
               Prescriptions ▾
