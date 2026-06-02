@@ -1,21 +1,22 @@
+import { Link } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import FraisTable from "../component/frais/FraisTable";
 
 function Dashboard() {
   const { user } = useAuth();
 
   return (
     <>
-      <h1>Bienvenue sur Dashboard</h1>
-      <h2>Login with valid credentials</h2>
+      <h1>Tableau de bord</h1>
       {user ? (
-        <p>
-          Bonjour {user.prenom_visiteur} {user.nom_visiteur} !
-        </p>
+        <p>Bonjour {user.prenom_visiteur} {user.nom_visiteur} !</p>
       ) : (
         <p>Bonjour !</p>
       )}
-      <FraisTable />
+      <ul>
+        <li><Link to="/medicaments">Rechercher un médicament</Link></li>
+        <li><Link to="/prescriptions/toutes">Toutes les prescriptions</Link></li>
+        <li><Link to="/prescriptions/stats">Dosage le plus prescrit</Link></li>
+      </ul>
     </>
   );
 }

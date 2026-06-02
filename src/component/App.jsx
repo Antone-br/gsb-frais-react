@@ -5,8 +5,6 @@ import Dashboard from "../pages/Dashboard";
 import Navbar from "./Navbar.jsx";
 import { AuthProvider } from "../context/AuthContext";
 import PrivateRoute from "./PrivateRoute.jsx";
-import FraisForm from "./frais/FraisForm.jsx";
-import FraisEdit from "../pages/frais/FraisEdit.jsx";
 import FraisHorsForfait from "../pages/frais/FraisHorsForfait.jsx";
 import FraisHorsForfaitForm from "../pages/frais/FraisHorsForfaitAdd.jsx";
 import FraisHorsForfaitEdit from "../pages/frais/FraisHorsForfaitEdit.jsx";
@@ -35,8 +33,6 @@ function App() {
               </PrivateRoute>
             }
           />
-          <Route path="/frais/ajouter" element={<FraisForm />} />
-          <Route path="/frais/modifier/:id" element={<FraisEdit />} />
           <Route
             path="/medicaments"
             element={
