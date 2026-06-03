@@ -15,6 +15,17 @@ export const getAllMedicaments = async (token) => {
   return response.data;
 };
 
+export const searchMedicaments = async (nom, idFamille, token) => {
+  const params = {};
+  if (nom) params.nom_commercial = nom;
+  if (idFamille) params.id_famille = idFamille;
+  const response = await axios.get(`${API_URL}medicaments/recherche`, {
+    params,
+    headers: { Authorization: `Bearer ${token}` },
+  });
+  return response.data;
+};
+
 export const getFamilles = async (token) => {
   const response = await axios.get(`${API_URL}familles`, {
     headers: { Authorization: `Bearer ${token}` },

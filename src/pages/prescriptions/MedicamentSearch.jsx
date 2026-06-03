@@ -1,7 +1,7 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import { getAllMedicaments, getFamilles } from "../../services/prescriptionService";
+import { searchMedicaments, getFamilles } from "../../services/prescriptionService";
 
 function MedicamentSearch() {
   const { token } = useAuth();
@@ -19,7 +19,7 @@ function MedicamentSearch() {
     const load = async () => {
       try {
         const [meds, fams] = await Promise.all([
-          getAllMedicaments(token),
+          searchMedicaments("", null, token),
           getFamilles(token),
         ]);
         setMedicaments(meds || []);
@@ -35,14 +35,11 @@ function MedicamentSearch() {
 
   }, [token]);
 
-  const filtered = useMemo(() => {
-    const q = nom.trim().toLowerCase();
-    return medicaments.filter((m) => {
-      const matchNom = !q || (m.nom_commercial || "").toLowerCase().includes(q);
-      const matchFamille = !idFamille || String(m.id_famille) === String(idFamille);
-      return matchNom && matchFamille;
-    });
-  }, [medicaments, nom, idFamille]);
+  const filtered = medicaments.filter((m) => {
+    const matchNom = m.nom_commercial.toLowerCase().includes(nom.trim().toLowerCase());
+    const matchFamille = !idFamille || String(m.id_famille) === idFamille;
+    return matchNom && matchFamille;
+  });
 
   if (loading) return <div className="container mt-4"><b>Chargement...</b></div>;
 

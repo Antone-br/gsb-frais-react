@@ -56,7 +56,7 @@ function PrescriptionForm({ prescription = null, lockedMedicamentId = null }) {
   if (!refs) return <div className="container mt-4"><b>Chargement...</b></div>;
 
   return (
-    <div className="container mt-4" style={{ maxWidth: "600px" }}>
+    <div className="container mt-4">
       <div className="d-flex justify-content-between align-items-center mb-3">
         <h2>{prescription ? "Modifier une prescription" : "Ajouter une prescription"}</h2>
         <button type="button" className="btn btn-outline-secondary" onClick={() => navigate(-1)}>Retour</button>

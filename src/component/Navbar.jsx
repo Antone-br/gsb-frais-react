@@ -25,9 +25,6 @@ function Navbar() {
               <Link className="nav-link" to="/">Accueil</Link>
             </li>
             <li className="nav-item">
-              <Link className="nav-link" to="/dashboard">Tableau de bord</Link>
-            </li>
-            <li className="nav-item">
               <Link className="nav-link" to="/medicaments">Médicaments</Link>
             </li>
             <li className="nav-item dropdown">
