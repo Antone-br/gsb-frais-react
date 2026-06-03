@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import "../../styles/FraisHorsForfait.css";
-import "../../styles/FraisTable.css";
+import { Link } from "react-router-dom";
 import axios from "axios";
 import { API_URL } from "../../services/authService";
 import { useAuth } from "../../context/AuthContext";
@@ -18,11 +17,7 @@ function FraisHorsForfaitTable() {
       try {
         const response = await axios.get(
           `${API_URL}fraisHF/liste/${idFraisHF}`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          },
+          { headers: { Authorization: `Bearer ${token}` } },
         );
         setFraisHFList(response.data || []);
       } catch (error) {
@@ -31,116 +26,83 @@ function FraisHorsForfaitTable() {
         setLoading(false);
       }
     };
-
-    if (idFraisHF && token) {
-      fetchFraisHF();
-    }
+    if (idFraisHF && token) fetchFraisHF();
   }, [idFraisHF, token]);
 
-  if (loading) {
-    return (
-      <div>
-        <b>Chargement des frais hors forfait...</b>
-      </div>
-    );
-  }
-
   const handleDelete = async (id) => {
-    if (
-      !window.confirm(
-        "Êtes-vous sûr de vouloir supprimer ce frais hors forfait ?",
-      )
-    )
-      return;
-
+    if (!window.confirm("Êtes-vous sûr de vouloir supprimer ce frais hors forfait ?")) return;
     try {
       await axios.delete(`${API_URL}fraisHF/suppr`, {
         data: { id_fraisHF: id },
         headers: { Authorization: `Bearer ${token}` },
       });
-
-      setFraisHFList((prev) =>
-        prev.filter((fraisHF) => fraisHF.id_fraishorsforfait !== id),
-      );
+      setFraisHFList((prev) => prev.filter((f) => f.id_fraishorsforfait !== id));
     } catch (error) {
       console.error("Erreur lors de la suppression:", error);
     }
   };
 
-  const total = fraisHFList.reduce((sum, fraisHF) => {
-    return sum + (parseFloat(fraisHF.montant_fraishorsforfait) || 0);
-  }, 0);
+  const total = fraisHFList.reduce((sum, f) => sum + (parseFloat(f.montant_fraishorsforfait) || 0), 0);
+
+  if (loading) return <div className="text-center p-4"><strong>Chargement...</strong></div>;
 
   return (
-    <div className="frais-hors-forfait-container">
-      <h2>Liste des Frais Hors Forfait</h2>
-
-      <table className="frais-hors-forfait-table">
-        <thead>
-          <tr>
-            <th>ID</th>
-            <th>Date</th>
-            <th>Montant</th>
-            <th>Libellé</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {fraisHFList.map((fraisHF) => (
-            <tr key={fraisHF.id_fraishorsforfait}>
-              <td>{fraisHF.id_fraishorsforfait}</td>
-              <td>{fraisHF.date_fraishorsforfait}</td>
-              <td>
-                {fraisHF.montant_fraishorsforfait !== null
-                  ? `${parseFloat(fraisHF.montant_fraishorsforfait).toFixed(
-                      2,
-                    )} €`
-                  : "—"}
-              </td>
-              <td>{fraisHF.lib_fraishorsforfait}</td>
-              <td>
-                <button
-                  onClick={() =>
-                    navigate(
-                      `/frais/${idFraisHF}/hors-forfait/modifier/${fraisHF.id_fraishorsforfait}`,
-                    )
-                  }
-                  className="edit-button"
-                >
-                  Modifier
-                </button>
-                <button
-                  onClick={() => handleDelete(fraisHF.id_fraishorsforfait)}
-                  className="delete-button"
-                >
-                  Supprimer
-                </button>
-              </td>
-            </tr>
-          ))}
-        </tbody>
-      </table>
-
-      <div className="total-row">
-        <div colSpan="3">Total {total.toFixed(2)} €</div>
-
-        <div colSpan="2">
-          <div className="table-actions">
-            <button
-              onClick={() =>
-                navigate(`/frais/${idFraisHF}/hors-forfait/ajouter`)
-              }
-              className="add-button"
-            >
-              Ajouter
-            </button>
-            <button
-              onClick={() => navigate(`/frais/modifier/${idFraisHF}`)}
-              className="back-button"
-            >
-              Retour
-            </button>
+    <div className="container mt-4">
+      <div className="card">
+        <div className="card-body">
+          <div className="d-flex justify-content-between align-items-center mb-3">
+            <h4 className="mb-0">Frais hors forfait</h4>
+            <div className="d-flex gap-2">
+              <Link className="btn btn-success btn-sm" to={`/frais/${idFraisHF}/hors-forfait/ajouter`}>
+                + Ajouter
+              </Link>
+              <button className="btn btn-outline-secondary btn-sm" onClick={() => navigate(`/frais/modifier/${idFraisHF}`)}>
+                Retour
+              </button>
+            </div>
           </div>
+          <table className="table table-bordered table-striped table-hover">
+            <thead className="table-light">
+              <tr>
+                <th>ID</th>
+                <th>Date</th>
+                <th>Montant</th>
+                <th>Libellé</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {fraisHFList.map((f) => (
+                <tr key={f.id_fraishorsforfait}>
+                  <td>{f.id_fraishorsforfait}</td>
+                  <td>{f.date_fraishorsforfait}</td>
+                  <td>{f.montant_fraishorsforfait !== null ? `${parseFloat(f.montant_fraishorsforfait).toFixed(2)} €` : "—"}</td>
+                  <td>{f.lib_fraishorsforfait}</td>
+                  <td>
+                    <div className="d-flex gap-1">
+                      <button
+                        className="btn btn-warning btn-sm"
+                        onClick={() => navigate(`/frais/${idFraisHF}/hors-forfait/modifier/${f.id_fraishorsforfait}`)}
+                      >
+                        Modifier
+                      </button>
+                      <button
+                        className="btn btn-danger btn-sm"
+                        onClick={() => handleDelete(f.id_fraishorsforfait)}
+                      >
+                        Supprimer
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+            <tfoot>
+              <tr className="table-light">
+                <td colSpan="5"><strong>Total : {total.toFixed(2)} €</strong></td>
+              </tr>
+            </tfoot>
+          </table>
         </div>
       </div>
     </div>

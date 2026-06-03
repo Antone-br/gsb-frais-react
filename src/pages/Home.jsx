@@ -1,8 +1,7 @@
 function Home() {
   return (
-    <div>
-      <title>GSB Frais</title>
-      <h1>Bienvenue sur Home</h1>
+    <div className="container mt-4">
+      <h1>Bienvenue sur GSBfrais</h1>
     </div>
   );
 }

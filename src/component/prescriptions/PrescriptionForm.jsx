@@ -1,15 +1,8 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import {
-  getAllMedicaments,
-  getDosages,
-  getTypesIndividu,
-  createPrescription,
-  updatePrescription,
-} from "../../services/prescriptionService";
+import { getAllMedicaments, getDosages, getTypesIndividu, createPrescription, updatePrescription } from "../../services/prescriptionService";
 import Select from "./Select";
-import "../../styles/Prescriptions.css";
 
 function PrescriptionForm({ prescription = null, lockedMedicamentId = null }) {
   const { token } = useAuth();
@@ -33,10 +26,7 @@ function PrescriptionForm({ prescription = null, lockedMedicamentId = null }) {
       .then(([medicaments, dosages, typesIndividu]) =>
         setRefs({ medicaments: medicaments || [], dosages: dosages || [], typesIndividu: typesIndividu || [] }),
       )
-      .catch((err) => {
-        console.error("Erreur chargement:", err);
-        setError("Erreur lors du chargement des donnees.");
-      });
+      .catch(() => setError("Erreur lors du chargement des données."));
   }, [token]);
 
   const handleSubmit = async (e) => {
@@ -51,15 +41,7 @@ function PrescriptionForm({ prescription = null, lockedMedicamentId = null }) {
         posologie: form.posologie || null,
       };
       if (prescription) {
-        await updatePrescription(
-          {
-            ...payload,
-            old_id_medicament: payload.id_medicament,
-            old_id_dosage: prescription.id_dosage,
-            old_id_type_individu: prescription.id_type_individu,
-          },
-          token,
-        );
+        await updatePrescription({ ...payload, old_id_medicament: payload.id_medicament, old_id_dosage: prescription.id_dosage, old_id_type_individu: prescription.id_type_individu }, token);
       } else {
         await createPrescription(payload, token);
       }
@@ -71,68 +53,67 @@ function PrescriptionForm({ prescription = null, lockedMedicamentId = null }) {
     }
   };
 
-  if (!refs) {
-    return <div className="prescriptions-container"><b>Chargement...</b></div>;
-  }
+  if (!refs) return <div className="container mt-4"><b>Chargement...</b></div>;
 
   return (
-    <div className="prescriptions-container">
-      <div className="prescriptions-header">
+    <div className="container mt-4" style={{ maxWidth: "600px" }}>
+      <div className="d-flex justify-content-between align-items-center mb-3">
         <h2>{prescription ? "Modifier une prescription" : "Ajouter une prescription"}</h2>
-        <button type="button" className="back-button" onClick={() => navigate(-1)}>
-          Retour
-        </button>
+        <button type="button" className="btn btn-outline-secondary" onClick={() => navigate(-1)}>Retour</button>
       </div>
 
-      {error && <div className="error-message">{error}</div>}
+      {error && <div className="alert alert-danger">{error}</div>}
 
-      <form className="prescriptions-form" onSubmit={handleSubmit}>
-        <Select
-          label="Medicament"
-          value={form.id_medicament}
-          onChange={(v) => update("id_medicament", v)}
-          options={refs.medicaments}
-          valueKey="id_medicament"
-          getLabel={(m) => m.nom_commercial}
-          placeholder="-- Choisir un medicament --"
-          disabled={!!prescription || !!lockedMedicamentId}
-        />
-        <Select
-          label="Dosage"
-          value={form.id_dosage}
-          onChange={(v) => update("id_dosage", v)}
-          options={refs.dosages}
-          valueKey="id_dosage"
-          getLabel={(d) => `${d.qte_dosage} ${d.unite_dosage}`}
-          placeholder="-- Choisir un dosage --"
-        />
-        <Select
-          label="Type individu"
-          value={form.id_type_individu}
-          onChange={(v) => update("id_type_individu", v)}
-          options={refs.typesIndividu}
-          valueKey="id_type_individu"
-          getLabel={(ti) => ti.lib_type_individu}
-          placeholder="-- Choisir un type --"
-        />
-
-        <div className="form-group">
-          <label>Posologie</label>
-          <input
-            type="text"
-            value={form.posologie}
-            onChange={(e) => update("posologie", e.target.value)}
-            placeholder="Posologie (optionnel, max 100 car.)"
-            maxLength={100}
-          />
+      <div className="card">
+        <div className="card-body">
+          <form onSubmit={handleSubmit}>
+            <Select
+              label="Médicament"
+              value={form.id_medicament}
+              onChange={(v) => update("id_medicament", v)}
+              options={refs.medicaments}
+              valueKey="id_medicament"
+              getLabel={(m) => m.nom_commercial}
+              placeholder="-- Choisir un médicament --"
+              disabled={!!prescription || !!lockedMedicamentId}
+            />
+            <Select
+              label="Dosage"
+              value={form.id_dosage}
+              onChange={(v) => update("id_dosage", v)}
+              options={refs.dosages}
+              valueKey="id_dosage"
+              getLabel={(d) => `${d.qte_dosage} fois par ${d.unite_dosage.toLowerCase()}`}
+              placeholder="-- Choisir un dosage --"
+            />
+            <Select
+              label="Type individu"
+              value={form.id_type_individu}
+              onChange={(v) => update("id_type_individu", v)}
+              options={refs.typesIndividu}
+              valueKey="id_type_individu"
+              getLabel={(ti) => ti.lib_type_individu}
+              placeholder="-- Choisir un type --"
+            />
+            <div className="mb-3">
+              <label className="form-label">Posologie</label>
+              <input
+                type="text"
+                className="form-control"
+                value={form.posologie}
+                onChange={(e) => update("posologie", e.target.value)}
+                placeholder="Posologie (comment prendre le médicament, max 100 car.)"
+                maxLength={100}
+              />
+            </div>
+            <div className="d-flex gap-2">
+              <button type="submit" className="btn btn-primary" disabled={submitting}>
+                {submitting ? "Enregistrement..." : prescription ? "Modifier" : "Ajouter"}
+              </button>
+            </div>
+          </form>
         </div>
-
-        <div className="form-actions">
-          <button type="submit" className="submit-button" disabled={submitting}>
-            {submitting ? "Enregistrement..." : prescription ? "Modifier" : "Ajouter"}
-          </button>
-        </div>
-      </form>
+      </div>
     </div>
   );
 }

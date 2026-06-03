@@ -15,28 +15,32 @@ function PrescriptionEdit() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+
     if (!token || !idMedicament) {
       setLoading(false);
       return;
     }
-    getPrescriptions(idMedicament, token)
-      .then((rows) => {
+
+    const load = async () => {
+      try {
+        const rows = await getPrescriptions(idMedicament, token);
         const match = (rows || []).find(
-          (p) => p.id_dosage === idDosage && p.id_type_individu === idType,
+          (p) => p.id_dosage === idDosage && p.id_type_individu === idType
         );
         setPrescription(match || null);
-      })
-      .catch((err) => console.error("Erreur chargement prescription:", err))
-      .finally(() => setLoading(false));
+      } catch {
+        setPrescription(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    load();
+
   }, [token, idMedicament, idDosage, idType]);
 
-  if (loading) {
-    return <div className="prescriptions-container"><b>Chargement...</b></div>;
-  }
-
-  if (!prescription) {
-    return <div className="prescriptions-container">Prescription non trouvée</div>;
-  }
+  if (loading) return <div className="container mt-4"><b>Chargement...</b></div>;
+  if (!prescription) return <div className="container mt-4">Prescription non trouvée</div>;
 
   return <PrescriptionForm prescription={prescription} />;
 }

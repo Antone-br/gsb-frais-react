@@ -21,7 +21,7 @@ function App() {
     <AuthProvider>
       <BrowserRouter>
         <Navbar />
-
+        <div style={{ marginTop: "70px" }}>
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<Login />} />
@@ -96,6 +96,7 @@ function App() {
           />
 
         </Routes>
+        </div>
       </BrowserRouter>
     </AuthProvider>
   );

@@ -3,7 +3,6 @@ import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 import { API_URL } from "../../services/authService";
 import { useAuth } from "../../context/AuthContext";
-import "../../styles/FraisHorsForfait.css";
 
 const FraisHorsForfaitForm = ({ fraisHF = null }) => {
   const { token } = useAuth();
@@ -30,91 +29,80 @@ const FraisHorsForfaitForm = ({ fraisHF = null }) => {
     e.preventDefault();
     setLoading(true);
     setError("");
-
     try {
       if (!token) throw new Error("Token manquant");
-
       const data = {
         id_frais: parseInt(idFrais, 10),
-        date: date,
-        libelle: libelle,
+        date,
+        libelle,
         montant: parseFloat(montant),
       };
-
       let url = `${API_URL}fraisHF/ajout`;
-
       if (fraisHF) {
         data.id_fraisHF = idFraisHF;
         url = `${API_URL}fraisHF/modif`;
       }
-
-      const response = await axios.post(url, data, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      console.log("Réponse API =", response.data);
-
+      await axios.post(url, data, { headers: { Authorization: `Bearer ${token}` } });
       navigate(`/frais/${idFrais}/hors-forfait`);
     } catch (err) {
-      console.error("Erreur HF :", err);
-      setError(
-        err.response?.data?.message ||
-          err.message ||
-          "Erreur lors de l'enregistrement du frais hors forfait",
-      );
+      setError(err.response?.data?.message || err.message || "Erreur lors de l'enregistrement");
     } finally {
       setLoading(false);
     }
   };
 
   return (
-    <div className="frais-hors-forfait-container">
-      <h2>
-        {fraisHF
-          ? "Modifier un frais hors forfait"
-          : "Ajouter un frais hors forfait"}
-      </h2>
-
-      <form onSubmit={handleSubmit}>
-        <input
-          type="date"
-          value={date}
-          onChange={(e) => setDate(e.target.value)}
-          required
-        />
-
-        <input
-          type="text"
-          placeholder="Libellé"
-          value={libelle}
-          onChange={(e) => setLibelle(e.target.value)}
-          required
-        />
-
-        <input
-          type="number"
-          step="0.01"
-          min="0"
-          placeholder="Montant"
-          value={montant}
-          onChange={(e) => setMontant(e.target.value)}
-          required
-        />
-
-        {error && <div className="error-message">{error}</div>}
-
-        <button type="submit" disabled={loading}>
-          {fraisHF ? "Modifier" : loading ? "Enregistrement..." : "Ajouter"}
-        </button>
-
-        <button
-          type="button"
-          className="return-button"
-          onClick={() => navigate(`/frais/${idFrais}/hors-forfait`)}
-        >
-          Retour
-        </button>
-      </form>
+    <div className="container mt-4" style={{ maxWidth: "500px" }}>
+      <div className="card">
+        <div className="card-body">
+          <h4 className="mb-3">{fraisHF ? "Modifier un frais hors forfait" : "Ajouter un frais hors forfait"}</h4>
+          <form onSubmit={handleSubmit}>
+            <div className="mb-3">
+              <label className="form-label">Date</label>
+              <input
+                type="date"
+                className="form-control"
+                value={date}
+                onChange={(e) => setDate(e.target.value)}
+                required
+              />
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Libellé</label>
+              <input
+                type="text"
+                className="form-control"
+                placeholder="Libellé"
+                value={libelle}
+                onChange={(e) => setLibelle(e.target.value)}
+                required
+              />
+            </div>
+            <div className="mb-3">
+              <label className="form-label">Montant</label>
+              <input
+                type="number"
+                step="0.01"
+                min="0"
+                className="form-control"
+                placeholder="Montant"
+                value={montant}
+                onChange={(e) => setMontant(e.target.value)}
+                required
+              />
+            </div>
+            {error && <div className="alert alert-danger">{error}</div>}
+            <div className="d-flex gap-2">
+              <button type="submit" className="btn btn-primary" disabled={loading}>
+                {fraisHF ? "Modifier" : loading ? "Enregistrement..." : "Ajouter"}
+              </button>
+              <button type="button" className="btn btn-secondary" onClick={() => navigate(`/frais/${idFrais}/hors-forfait`)}>
+                Retour
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
   );
 };

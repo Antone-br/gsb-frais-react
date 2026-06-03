@@ -1,13 +1,8 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
 import { useAuth } from "../../context/AuthContext";
-import {
-  getMedicament,
-  getPrescriptions,
-  deletePrescription,
-} from "../../services/prescriptionService";
+import { getMedicament, getPrescriptions, deletePrescription } from "../../services/prescriptionService";
 import PrescriptionTable from "../../component/prescriptions/PrescriptionTable";
-import "../../styles/Prescriptions.css";
 
 function PrescriptionDetail() {
   const { idMedicament } = useParams();
@@ -30,8 +25,7 @@ function PrescriptionDetail() {
         setMedicament(med);
         setPrescriptions(presc || []);
       } catch (err) {
-        console.error("Erreur chargement:", err);
-        setError("Erreur lors du chargement des donnees.");
+        setError("Erreur lors du chargement des données.");
       } finally {
         setLoading(false);
       }
@@ -40,63 +34,44 @@ function PrescriptionDetail() {
   }, [token, idMedicament]);
 
   const handleEdit = (presc) => {
-    navigate(
-      `/prescriptions/modifier?medicament=${idMedicament}&dosage=${presc.id_dosage}&type=${presc.id_type_individu}`,
-    );
+    navigate(`/prescriptions/modifier?medicament=${idMedicament}&dosage=${presc.id_dosage}&type=${presc.id_type_individu}`);
   };
 
   const handleDelete = async (presc) => {
-    if (!window.confirm("Etes-vous sur de vouloir supprimer cette prescription ?")) return;
-
+    if (!window.confirm("Supprimer cette prescription ?")) return;
     try {
-      await deletePrescription(
-        {
-          id_medicament: parseInt(idMedicament, 10),
-          id_dosage: presc.id_dosage,
-          id_type_individu: presc.id_type_individu,
-        },
-        token,
-      );
-      setPrescriptions((prev) =>
-        prev.filter(
-          (p) => !(p.id_dosage === presc.id_dosage && p.id_type_individu === presc.id_type_individu),
-        ),
-      );
-      setSuccess("Prescription supprimee.");
+      await deletePrescription({ id_medicament: parseInt(idMedicament, 10), id_dosage: presc.id_dosage, id_type_individu: presc.id_type_individu }, token);
+      setPrescriptions((prev) => prev.filter((p) => !(p.id_dosage === presc.id_dosage && p.id_type_individu === presc.id_type_individu)));
+      setSuccess("Prescription supprimée.");
       setError("");
     } catch (err) {
       setError(err.response?.data?.message || "Erreur lors de la suppression.");
     }
   };
 
-  if (loading) {
-    return <div className="prescriptions-container"><b>Chargement...</b></div>;
-  }
+  if (loading) return <div className="container mt-4"><b>Chargement...</b></div>;
 
   return (
-    <div className="prescriptions-container">
-      <div className="prescriptions-header">
-        <h2>Prescriptions : {medicament?.nom_commercial || `Medicament #${idMedicament}`}</h2>
-        <button className="back-button" onClick={() => navigate("/medicaments")}>
-          Retour
-        </button>
+    <div className="container mt-4">
+      <div className="d-flex justify-content-between align-items-center mb-3">
+        <h2>Prescriptions : {medicament?.nom_commercial || `Médicament #${idMedicament}`}</h2>
+        <button className="btn btn-outline-secondary" onClick={() => navigate("/medicaments")}>Retour</button>
       </div>
 
-      {success && <div className="success-message">{success}</div>}
-      {error && <div className="error-message">{error}</div>}
+      {success && <div className="alert alert-success">{success}</div>}
+      {error && <div className="alert alert-danger">{error}</div>}
 
-      <Link
-        to={`/prescriptions/ajouter?medicament=${idMedicament}`}
-        className="detail-link"
-      >
-        + Ajouter une prescription
-      </Link>
+      <div className="mb-3">
+        <Link className="btn btn-success btn-sm" to={`/prescriptions/ajouter?medicament=${idMedicament}`}>
+          + Ajouter une prescription
+        </Link>
+      </div>
 
-      <PrescriptionTable
-        prescriptions={prescriptions}
-        onEdit={handleEdit}
-        onDelete={handleDelete}
-      />
+      <div className="card">
+        <div className="card-body p-0">
+          <PrescriptionTable prescriptions={prescriptions} onEdit={handleEdit} onDelete={handleDelete} />
+        </div>
+      </div>
     </div>
   );
 }
