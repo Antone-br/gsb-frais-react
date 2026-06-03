@@ -66,6 +66,14 @@ function App() {
             }
           />
           <Route
+            path="/prescriptions/stats/:idMedicament"
+            element={
+              <PrivateRoute>
+                <PrescriptionStats />
+              </PrivateRoute>
+            }
+          />
+          <Route
             path="/prescriptions/toutes"
             element={
               <PrivateRoute>

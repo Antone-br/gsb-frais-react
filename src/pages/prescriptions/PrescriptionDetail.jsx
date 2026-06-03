@@ -16,7 +16,8 @@ function PrescriptionDetail() {
   const [success, setSuccess] = useState("");
 
   useEffect(() => {
-    const fetchAll = async () => {
+    if (!token || !idMedicament) return;
+    const load = async () => {
       try {
         const [med, presc] = await Promise.all([
           getMedicament(idMedicament, token),
@@ -24,13 +25,13 @@ function PrescriptionDetail() {
         ]);
         setMedicament(med);
         setPrescriptions(presc || []);
-      } catch (err) {
+      } catch {
         setError("Erreur lors du chargement des données.");
       } finally {
         setLoading(false);
       }
     };
-    if (token && idMedicament) fetchAll();
+    load();
   }, [token, idMedicament]);
 
   const handleEdit = (presc) => {
@@ -40,7 +41,10 @@ function PrescriptionDetail() {
   const handleDelete = async (presc) => {
     if (!window.confirm("Supprimer cette prescription ?")) return;
     try {
-      await deletePrescription({ id_medicament: parseInt(idMedicament, 10), id_dosage: presc.id_dosage, id_type_individu: presc.id_type_individu }, token);
+      await deletePrescription(
+        { id_medicament: parseInt(idMedicament, 10), id_dosage: presc.id_dosage, id_type_individu: presc.id_type_individu },
+        token
+      );
       setPrescriptions((prev) => prev.filter((p) => !(p.id_dosage === presc.id_dosage && p.id_type_individu === presc.id_type_individu)));
       setSuccess("Prescription supprimée.");
       setError("");
@@ -54,16 +58,26 @@ function PrescriptionDetail() {
   return (
     <div className="container mt-4">
       <div className="d-flex justify-content-between align-items-center mb-3">
-        <h2>Prescriptions : {medicament?.nom_commercial || `Médicament #${idMedicament}`}</h2>
+        <h2 className="mb-0">{medicament?.nom_commercial || `Médicament #${idMedicament}`}</h2>
         <button className="btn btn-outline-secondary" onClick={() => navigate("/medicaments")}>Retour</button>
       </div>
 
       {success && <div className="alert alert-success">{success}</div>}
       {error && <div className="alert alert-danger">{error}</div>}
 
-      <div className="mb-3">
+      <div className="card mb-3">
+        <div className="card-body">
+          <dl className="row mb-0">
+            <dt className="col-sm-3">Famille</dt>
+            <dd className="col-sm-9">{medicament?.lib_famille || "—"}</dd>
+          </dl>
+        </div>
+      </div>
+
+      <div className="d-flex justify-content-between align-items-center mb-2">
+        <h5 className="mb-0">Prescriptions</h5>
         <Link className="btn btn-success btn-sm" to={`/prescriptions/ajouter?medicament=${idMedicament}`}>
-          + Ajouter une prescription
+          + Ajouter
         </Link>
       </div>
 
