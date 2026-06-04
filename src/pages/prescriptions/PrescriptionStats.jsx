@@ -123,7 +123,6 @@ function PrescriptionStats() {
                     <td>{i + 1}</td>
                     <td>
                       {d.qte_dosage} fois par {d.unite_dosage.toLowerCase()}
-                      {d.is_top && <span className="badge text-bg-success ms-1">Top</span>}
                     </td>
                     <td>{d.total}</td>
                     <td style={{ minWidth: "120px" }}>
